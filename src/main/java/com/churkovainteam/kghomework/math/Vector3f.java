@@ -15,12 +15,6 @@ public final class Vector3f {
         this.z = z;
     }
 
-    public boolean equals(Vector3f other) {
-        return Math.abs(x - other.x) < MathSettings.EPS
-                && Math.abs(y - other.y) < MathSettings.EPS
-                && Math.abs(z - other.z) < MathSettings.EPS;
-    }
-
     public void sub(Vector3f to, Vector3f from) {
         if (to == null || from == null) {
             throw new IllegalArgumentException("Vector3f can not be null");
@@ -69,5 +63,11 @@ public final class Vector3f {
         this.x += t1.x;
         this.y += t1.y;
         this.z += t1.z;
+    }
+
+    public boolean equals(Vector3f other) {
+        return Math.abs(x - other.x) < MathSettings.EPS
+                && Math.abs(y - other.y) < MathSettings.EPS
+                && Math.abs(z - other.z) < MathSettings.EPS;
     }
 }

@@ -1,6 +1,6 @@
 package com.churkovainteam.kghomework.math;
 
-public class Matrix4f {
+public final class Matrix4f {
     public float m00;
     public float m01;
     public float m02;
@@ -57,11 +57,11 @@ public class Matrix4f {
     }
 
     public Matrix4f(float[] vertices) {
-        if(vertices == null) {
+        if (vertices == null) {
             throw new IllegalStateException("v is null");
         }
 
-        if(vertices.length < 16) {
+        if (vertices.length < 16) {
             throw new IllegalArgumentException("Can not create a Matrix 4x4 with that length = " + vertices.length);
         }
 
@@ -86,8 +86,7 @@ public class Matrix4f {
         this.m33 = vertices[15];
     }
 
-    public final void mul(float scalar)
-    {
+    public final void mul(float scalar) {
         m00 *= scalar;
         m01 *= scalar;
         m02 *= scalar;
@@ -106,48 +105,59 @@ public class Matrix4f {
         m33 *= scalar;
     }
 
-    public final void mul(Matrix4f m1)
-    {
+    public final void mul(Matrix4f m1) {
 
-        final var m00 = this.m00*m1.m00 + this.m01*m1.m10 +
-                this.m02*m1.m20 + this.m03*m1.m30;
-        final var m01 = this.m00*m1.m01 + this.m01*m1.m11 +
-                this.m02*m1.m21 + this.m03*m1.m31;
-        final var m02 = this.m00*m1.m02 + this.m01*m1.m12 +
-                this.m02*m1.m22 + this.m03*m1.m32;
-        final var m03 = this.m00*m1.m03 + this.m01*m1.m13 +
-                this.m02*m1.m23 + this.m03*m1.m33;
+        final var m00 = this.m00 * m1.m00 + this.m01 * m1.m10 +
+                this.m02 * m1.m20 + this.m03 * m1.m30;
+        final var m01 = this.m00 * m1.m01 + this.m01 * m1.m11 +
+                this.m02 * m1.m21 + this.m03 * m1.m31;
+        final var m02 = this.m00 * m1.m02 + this.m01 * m1.m12 +
+                this.m02 * m1.m22 + this.m03 * m1.m32;
+        final var m03 = this.m00 * m1.m03 + this.m01 * m1.m13 +
+                this.m02 * m1.m23 + this.m03 * m1.m33;
 
-        final var m10 = this.m10*m1.m00 + this.m11*m1.m10 +
-                this.m12*m1.m20 + this.m13*m1.m30;
-        final var m11 = this.m10*m1.m01 + this.m11*m1.m11 +
-                this.m12*m1.m21 + this.m13*m1.m31;
-        final var m12 = this.m10*m1.m02 + this.m11*m1.m12 +
-                this.m12*m1.m22 + this.m13*m1.m32;
-        final var m13 = this.m10*m1.m03 + this.m11*m1.m13 +
-                this.m12*m1.m23 + this.m13*m1.m33;
+        final var m10 = this.m10 * m1.m00 + this.m11 * m1.m10 +
+                this.m12 * m1.m20 + this.m13 * m1.m30;
+        final var m11 = this.m10 * m1.m01 + this.m11 * m1.m11 +
+                this.m12 * m1.m21 + this.m13 * m1.m31;
+        final var m12 = this.m10 * m1.m02 + this.m11 * m1.m12 +
+                this.m12 * m1.m22 + this.m13 * m1.m32;
+        final var m13 = this.m10 * m1.m03 + this.m11 * m1.m13 +
+                this.m12 * m1.m23 + this.m13 * m1.m33;
 
-        final var m20 = this.m20*m1.m00 + this.m21*m1.m10 +
-                this.m22*m1.m20 + this.m23*m1.m30;
-        final var m21 = this.m20*m1.m01 + this.m21*m1.m11 +
-                this.m22*m1.m21 + this.m23*m1.m31;
-        final var m22 = this.m20*m1.m02 + this.m21*m1.m12 +
-                this.m22*m1.m22 + this.m23*m1.m32;
-        final var m23 = this.m20*m1.m03 + this.m21*m1.m13 +
-                this.m22*m1.m23 + this.m23*m1.m33;
+        final var m20 = this.m20 * m1.m00 + this.m21 * m1.m10 +
+                this.m22 * m1.m20 + this.m23 * m1.m30;
+        final var m21 = this.m20 * m1.m01 + this.m21 * m1.m11 +
+                this.m22 * m1.m21 + this.m23 * m1.m31;
+        final var m22 = this.m20 * m1.m02 + this.m21 * m1.m12 +
+                this.m22 * m1.m22 + this.m23 * m1.m32;
+        final var m23 = this.m20 * m1.m03 + this.m21 * m1.m13 +
+                this.m22 * m1.m23 + this.m23 * m1.m33;
 
-        final var m30 = this.m30*m1.m00 + this.m31*m1.m10 +
-                this.m32*m1.m20 + this.m33*m1.m30;
-        final var m31 = this.m30*m1.m01 + this.m31*m1.m11 +
-                this.m32*m1.m21 + this.m33*m1.m31;
-        final var m32 = this.m30*m1.m02 + this.m31*m1.m12 +
-                this.m32*m1.m22 + this.m33*m1.m32;
-        final var m33 = this.m30*m1.m03 + this.m31*m1.m13 +
-                this.m32*m1.m23 + this.m33*m1.m33;
+        final var m30 = this.m30 * m1.m00 + this.m31 * m1.m10 +
+                this.m32 * m1.m20 + this.m33 * m1.m30;
+        final var m31 = this.m30 * m1.m01 + this.m31 * m1.m11 +
+                this.m32 * m1.m21 + this.m33 * m1.m31;
+        final var m32 = this.m30 * m1.m02 + this.m31 * m1.m12 +
+                this.m32 * m1.m22 + this.m33 * m1.m32;
+        final var m33 = this.m30 * m1.m03 + this.m31 * m1.m13 +
+                this.m32 * m1.m23 + this.m33 * m1.m33;
 
-        this.m00 = m00; this.m01 = m01; this.m02 = m02; this.m03 = m03;
-        this.m10 = m10; this.m11 = m11; this.m12 = m12; this.m13 = m13;
-        this.m20 = m20; this.m21 = m21; this.m22 = m22; this.m23 = m23;
-        this.m30 = m30; this.m31 = m31; this.m32 = m32; this.m33 = m33;
+        this.m00 = m00;
+        this.m01 = m01;
+        this.m02 = m02;
+        this.m03 = m03;
+        this.m10 = m10;
+        this.m11 = m11;
+        this.m12 = m12;
+        this.m13 = m13;
+        this.m20 = m20;
+        this.m21 = m21;
+        this.m22 = m22;
+        this.m23 = m23;
+        this.m30 = m30;
+        this.m31 = m31;
+        this.m32 = m32;
+        this.m33 = m33;
     }
 }
