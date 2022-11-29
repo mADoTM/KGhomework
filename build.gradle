@@ -35,10 +35,6 @@ javafx {
 
 dependencies {
     implementation( 'org.controlsfx:controlsfx:11.1.2')
-    // https://mvnrepository.com/artifact/javax.vecmath/vecmath
-    // https://mvnrepository.com/artifact/javax.vecmath/vecmath
-    // https://mvnrepository.com/artifact/javax.vecmath/vecmath
-    implementation group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
 
 
 
