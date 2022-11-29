@@ -1,5 +1,8 @@
 package com.churkovainteam.kghomework.render_engine;
-import javax.vecmath.*;
+
+import com.churkovainteam.kghomework.math.Matrix4f;
+import com.churkovainteam.kghomework.math.Point2f;
+import com.churkovainteam.kghomework.math.Vector3f;
 
 public class GraphicConveyor {
 

@@ -1,5 +1,6 @@
 package com.churkovainteam.kghomework;
 
+import com.churkovainteam.kghomework.math.Vector3f;
 import com.churkovainteam.kghomework.model.Model;
 import com.churkovainteam.kghomework.objreader.ObjReader;
 import com.churkovainteam.kghomework.render_engine.Camera;
@@ -18,7 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
-import javax.vecmath.Vector3f;
 
 public class GuiController {
 
