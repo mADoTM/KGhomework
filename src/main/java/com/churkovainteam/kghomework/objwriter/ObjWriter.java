@@ -1,0 +1,139 @@
+package com.churkovainteam.kghomework.objwriter;
+
+import com.churkovainteam.kghomework.common.ObjToken;
+import com.churkovainteam.kghomework.math.Vector2f;
+import com.churkovainteam.kghomework.math.Vector3f;
+import com.churkovainteam.kghomework.model.Model;
+import com.churkovainteam.kghomework.model.Polygon;
+
+import java.util.ArrayList;
+
+public class ObjWriter {
+    private Model model;
+
+    public ObjWriter(Model model) {
+        this.model = model;
+    }
+
+    public ObjWriter() {
+        this(new Model());
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    public static String getContent(Model model) {
+        ObjWriter writer = new ObjWriter(model);
+        return writer.writeObjFile();
+    }
+
+    public String writeObjFile() {
+        StringBuilder lines = new StringBuilder();
+        this.appendVerticesInLines(lines);
+        this.appendTexturesInLines(lines);
+        this.appendNormalsInLines(lines);
+        this.appendFacesInLines(lines);
+        return lines.toString();
+    }
+
+    private void appendVerticesInLines(StringBuilder lines) {
+        if (this.model.vertices.size() == 0) {
+            throw new IllegalStateException("Can not make an object with out vertices");
+        } else {
+            ArrayList<Vector3f> vertices = this.model.vertices;
+
+            for (Vector3f vertex : vertices) {
+                lines.append(this.getVector3fWithTokenInString(vertex, ObjToken.VERTEX)).append("\n");
+            }
+
+        }
+    }
+
+    private void appendTexturesInLines(StringBuilder lines) {
+        if (this.model.textureVertices != null) {
+            ArrayList<Vector2f> textures = this.model.textureVertices;
+
+            for (Vector2f texture : textures) {
+                lines.append(this.getVector2fWithTokenInString(texture)).append("\n");
+            }
+
+        }
+    }
+
+    private void appendNormalsInLines(StringBuilder lines) {
+        if (this.model.normals != null) {
+            ArrayList<Vector3f> normals = this.model.normals;
+
+            for (Vector3f normal : normals) {
+                lines.append(this.getVector3fWithTokenInString(normal, ObjToken.NORMAL)).append("\n");
+            }
+
+        }
+    }
+
+    private void appendFacesInLines(StringBuilder lines) {
+        if (this.model.polygons == null) {
+            throw new IllegalArgumentException("Can not make an object with out polygons");
+        } else {
+            ArrayList<Polygon> polygons = this.model.polygons;
+
+            for(int i = 0; i < polygons.size(); ++i) {
+                Polygon polygon = (Polygon)polygons.get(i);
+                lines.append(ObjToken.FACE).append(" ");
+
+                for(int index = 0; index < polygon.getVertexIndices().size(); ++index) {
+                    lines.append(this.getNumberInString((float)((Integer)polygon.getVertexIndices().get(index) + 1)));
+                    Integer textureIndex = null;
+                    if (polygon.getTextureVertexIndices().size() > 0) {
+                        textureIndex = (Integer)polygon.getTextureVertexIndices().get(index) + 1;
+                        lines.append("/").append(this.getNumberInString(textureIndex)).append(" ");
+                    }
+
+                    if (polygon.getNormalIndices().size() > 0) {
+                        if (textureIndex == null) {
+                            lines.append("/");
+                        }
+
+                        lines.append("/").append(this.getNumberInString((float)((Integer)polygon.getNormalIndices().get(index) + 1)));
+                    }
+
+                    if (index < polygon.getVertexIndices().size() - 1) {
+                        lines.append(" ");
+                    }
+                }
+
+                if (i < polygons.size() - 1) {
+                    lines.append("\n");
+                }
+            }
+
+        }
+    }
+
+    protected String getVector3fWithTokenInString(Vector3f vector3f, ObjToken token) {
+        String var10000 = String.valueOf(token);
+        return var10000 + " " + this.getNumberInString(vector3f.x) + " " + this.getNumberInString(vector3f.y) + " " + this.getNumberInString(vector3f.z);
+    }
+
+    protected String getVector2fWithTokenInString(Vector2f vector2f) {
+        String var10000 = String.valueOf(ObjToken.TEXTURE);
+        return var10000 + " " + this.getNumberInString(vector2f.x) + " " + this.getNumberInString(vector2f.y);
+    }
+
+    protected String getNumberInString(float number) {
+        String result = "";
+        if (number % 1.0F == 0.0F) {
+            result = result + (int)number;
+        } else {
+            result = result + number;
+        }
+
+        return result;
+    }
+
+    protected String getNumberInString(Integer number) {
+        return number.toString();
+    }
+}
+
