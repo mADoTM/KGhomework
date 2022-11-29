@@ -36,7 +36,7 @@ javafx {
 dependencies {
     implementation('org.controlsfx:controlsfx:11.1.1')
     // https://mvnrepository.com/artifact/javax.vecmath/vecmath
-    implementation("javax.vecmath:vecmath:1.5.2")
+    implementation('javax.vecmath:vecmath:1.5.2')
 
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
