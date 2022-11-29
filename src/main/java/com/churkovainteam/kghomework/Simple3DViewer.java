@@ -7,13 +7,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class Simple3DViewer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        AnchorPane viewport = FXMLLoader.load(Simple3DViewer.class.getClassLoader().getResource("fxml/gui.fxml"));
+        AnchorPane viewport = FXMLLoader.load(Simple3DViewer.class.getClassLoader().getResource("gui.fxml"));
         // комментарий
         // абсолютно другой комментарий
         // комментарий #3
