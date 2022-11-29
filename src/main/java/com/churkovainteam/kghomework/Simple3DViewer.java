@@ -17,6 +17,7 @@ public class Simple3DViewer extends Application {
         // комментарий
         // абсолютно другой комментарий
         // комментарий #3
+        //попэц
         Scene scene = new Scene(viewport);
         stage.setMinWidth(1600);
         stage.setMinHeight(900);
