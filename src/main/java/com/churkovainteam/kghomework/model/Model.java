@@ -6,9 +6,8 @@ import com.churkovainteam.kghomework.math.Vector3f;
 import java.util.*;
 
 public class Model {
-
-    public List<Vector3f> vertices = new ArrayList<Vector3f>();
-    public List<Vector2f> textureVertices = new ArrayList<Vector2f>();
-    public List<Vector3f> normals = new ArrayList<Vector3f>();
-    public List<Polygon> polygons = new ArrayList<Polygon>();
+    public List<Vector3f> vertices = new ArrayList<>();
+    public List<Vector2f> textureVertices = new ArrayList<>();
+    public List<Vector3f> normals = new ArrayList<>();
+    public List<Polygon> polygons = new ArrayList<>();
 }
