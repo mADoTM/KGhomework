@@ -7,7 +7,7 @@ import com.churkovainteam.kghomework.model.Model;
 import com.churkovainteam.kghomework.model.Polygon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class ObjReader {
@@ -20,7 +20,7 @@ public class ObjReader {
 		int fileLine = 1;
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
-			ArrayList<String> wordsInLine = new ArrayList<>(Arrays.asList(line.split("\\s+")));
+			List<String> wordsInLine = new ArrayList<>(List.of(line.split("\\s+")));
 			if (wordsInLine.isEmpty()) {
 				continue;
 			}
@@ -45,7 +45,7 @@ public class ObjReader {
 		return model;
 	}
 
-	protected static Vector3f parseVertex(ArrayList<String> wordsInLineWithoutToken, int fileLine) {
+	protected static Vector3f parseVertex(List<String> wordsInLineWithoutToken, int fileLine) {
 		if (wordsInLineWithoutToken.size() != 3) {
 			throw new ObjReaderException("Error reading a vertex. Only x, y, z coordinates " +
 					"should be present in the description.", fileLine);
@@ -61,7 +61,7 @@ public class ObjReader {
 		}
 	}
 
-	protected static Vector2f parseTextureVertex(ArrayList<String> wordsInLineWithoutToken, int fileLine) {
+	protected static Vector2f parseTextureVertex(List<String> wordsInLineWithoutToken, int fileLine) {
 		if (wordsInLineWithoutToken.size() != 2) {
 			throw new ObjReaderException("Error reading texture vertex. Only u, v arguments should be present" +
 					"in the description.", fileLine);
@@ -77,7 +77,7 @@ public class ObjReader {
 		}
 	}
 
-	protected static Vector3f parseNormal(ArrayList<String> wordsInLineWithoutToken, int fileLine) {
+	protected static Vector3f parseNormal(List<String> wordsInLineWithoutToken, int fileLine) {
 		if (wordsInLineWithoutToken.size() != 3) {
 			throw new ObjReaderException("Error reading a normal. Only x, y, z coordinates " +
 					"should be present in the description.", fileLine);
@@ -93,10 +93,10 @@ public class ObjReader {
 		}
 	}
 
-	protected static Polygon parseFace(ArrayList<String> wordsInLineWithoutToken, int fileLine) {
-		ArrayList<Integer> polygonVertexIndices = new ArrayList<>();
-		ArrayList<Integer> polygonTextureVertexIndices = new ArrayList<>();
-		ArrayList<Integer> polygonNormalIndices = new ArrayList<>();
+	protected static Polygon parseFace(List<String> wordsInLineWithoutToken, int fileLine) {
+		List<Integer> polygonVertexIndices = new ArrayList<>();
+		List<Integer> polygonTextureVertexIndices = new ArrayList<>();
+		List<Integer> polygonNormalIndices = new ArrayList<>();
 
 		for (String value : wordsInLineWithoutToken) {
 			parseFaceWord(value, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, fileLine);
@@ -112,9 +112,9 @@ public class ObjReader {
 
 	protected static void parseFaceWord(
 			String wordInLine,
-			ArrayList<Integer> polygonVertexIndices,
-			ArrayList<Integer> polygonTextureVertexIndices,
-			ArrayList<Integer> polygonNormalIndices,
+			List<Integer> polygonVertexIndices,
+			List<Integer> polygonTextureVertexIndices,
+			List<Integer> polygonNormalIndices,
 			int fileLine) {
 		try {
 			String[] wordIndices = wordInLine.split("/");
