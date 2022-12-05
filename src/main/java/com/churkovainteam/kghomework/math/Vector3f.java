@@ -70,4 +70,13 @@ public final class Vector3f {
                 && Math.abs(y - other.y) < MathSettings.EPS
                 && Math.abs(z - other.z) < MathSettings.EPS;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == Vector3f.class) {
+            return ((Vector3f) obj).x == x && ((Vector3f) obj).y == y && ((Vector3f) obj).z == z;
+        }
+
+        return false;
+    }
 }

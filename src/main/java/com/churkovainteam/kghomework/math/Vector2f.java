@@ -7,4 +7,13 @@ public final class Vector2f {
     }
 
     public float x, y;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == Vector2f.class) {
+            return ((Vector2f) obj).x == x && ((Vector2f) obj).y == y;
+        }
+
+        return false;
+    }
 }

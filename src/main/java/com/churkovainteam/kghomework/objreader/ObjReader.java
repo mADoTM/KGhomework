@@ -12,133 +12,220 @@ import java.util.Scanner;
 
 public class ObjReader {
 
-	public static Model read(String fileContent) {
-		Scanner scanner = new Scanner(fileContent);
+    public static Model read(String fileContent) {
+        Scanner scanner = new Scanner(fileContent);
 
-		Model model = new Model();
+        Model model = new Model();
 
-		int fileLineId = 1;
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-			List<String> wordsInLine = new ArrayList<>(List.of(line.split("\\s+")));
-			if (wordsInLine.isEmpty()) {
-				continue;
-			}
+        int fileLineId = 1;
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            List<String> wordsInLine = new ArrayList<>(List.of(line.split("\\s+")));
+            if (wordsInLine.isEmpty()) {
+                continue;
+            }
 
-			try {
-				ObjToken token = ObjToken.fromString(wordsInLine.get(0));
-				wordsInLine.remove(0);
+            try {
+                ObjToken token = ObjToken.fromString(wordsInLine.get(0));
+                wordsInLine.remove(0);
 
-				switch (token) {
-					case VERTEX -> model.vertices.add(parseVertex(wordsInLine, fileLineId));
-					case TEXTURE -> model.textureVertices.add(parseTextureVertex(wordsInLine, fileLineId));
-					case NORMAL -> model.normals.add(parseNormal(wordsInLine, fileLineId));
-					case FACE -> model.polygons.add(parseFace(wordsInLine, fileLineId));
-				}
-			} catch (IllegalArgumentException e) {
-				throw new ObjReaderException(e.getMessage(), fileLineId);
-			}
+                switch (token) {
+                    case VERTEX -> model.vertices.add(parseVertex(wordsInLine, fileLineId));
+                    case TEXTURE -> model.textureVertices.add(parseTextureVertex(wordsInLine, fileLineId));
+                    case NORMAL -> model.normals.add(parseNormal(wordsInLine, fileLineId));
+                    case FACE -> model.polygons.add(parseFace(wordsInLine, fileLineId));
+                    case COMMENT -> model.comments.put(fileLineId, listToString(wordsInLine));
+                    case MATERIAL -> model.materials.put(fileLineId, parseMaterial(model, wordsInLine, fileLineId));
+                    case MATERIAL_LIB -> model.mtlFileName = parseMaterialLib(wordsInLine, fileLineId);
+                }
+            } catch (IllegalArgumentException e) {
+                throw new ObjReaderException(e.getMessage(), fileLineId);
+            }
 
-			fileLineId++;
-		}
+            fileLineId++;
+        }
 
-		return model;
-	}
+        return model;
+    }
 
-	protected static Vector3f parseVertex(List<String> wordsInLineWithoutToken, int fileLineId) {
-		if (wordsInLineWithoutToken.size() != 3) {
-			throw new ObjReaderException("Error reading a vertex. Only x, y, z coordinates " +
-					"should be present in the description.", fileLineId);
-		}
+    protected static String parseMaterialLib(List<String> wordsInLine, int fileLineId) {
+        if (wordsInLine.size() != 1) {
+            throw new ObjReaderException("The .mtl file must be one.", fileLineId);
+        }
 
-		try {
-			return new Vector3f(
-					Float.parseFloat(wordsInLineWithoutToken.get(0)),
-					Float.parseFloat(wordsInLineWithoutToken.get(1)),
-					Float.parseFloat(wordsInLineWithoutToken.get(2)));
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse float value.", fileLineId);
-		}
-	}
+        String[] words = wordsInLine.get(0).split("\\.");
+        if (words.length == 1 || !words[words.length - 1].equals("mtl")) {
+            throw new ObjReaderException("The mtllib command must contain a file with the .mtl extension.",
+                    fileLineId);
+        }
 
-	protected static Vector2f parseTextureVertex(List<String> wordsInLineWithoutToken, int fileLineId) {
-		if (wordsInLineWithoutToken.size() != 2) {
-			throw new ObjReaderException("Error reading texture vertex. Only u, v arguments should be present" +
-					"in the description.", fileLineId);
-		}
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < words.length - 1; i++) {
+            sb.append(words[i]).append(".");
+        }
 
-		try {
-			return new Vector2f(
-					Float.parseFloat(wordsInLineWithoutToken.get(0)),
-					Float.parseFloat(wordsInLineWithoutToken.get(1)));
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse float value.", fileLineId);
+        return sb.append("mtl").toString();
+    }
 
-		}
-	}
+    protected static String parseMaterial(Model model, List<String> wordsInLine, int fileLineId) {
+        if (model.mtlFileName.equals("")) {
+            throw new ObjReaderException("The .mtl file for taking textures is not specified.", fileLineId);
+        }
 
-	protected static Vector3f parseNormal(List<String> wordsInLineWithoutToken, int fileLineId) {
-		if (wordsInLineWithoutToken.size() != 3) {
-			throw new ObjReaderException("Error reading a normal. Only x, y, z coordinates " +
-					"should be present in the description.", fileLineId);
-		}
+        if (wordsInLine.size() != 1) {
+            throw new ObjReaderException("The title of the material must be 1 word.", fileLineId);
+        }
 
-		try {
-			return new Vector3f(
-					Float.parseFloat(wordsInLineWithoutToken.get(0)),
-					Float.parseFloat(wordsInLineWithoutToken.get(1)),
-					Float.parseFloat(wordsInLineWithoutToken.get(2)));
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse float value.", fileLineId);
-		}
-	}
+        return wordsInLine.get(0);
+    }
 
-	protected static Polygon parseFace(List<String> wordsInLineWithoutToken, int fileLineId) {
-		List<Integer> polygonVertexIndices = new ArrayList<>();
-		List<Integer> polygonTextureVertexIndices = new ArrayList<>();
-		List<Integer> polygonNormalIndices = new ArrayList<>();
+    private static String listToString(List<String> words) {
+        if (words.size() == 0) {
+            return "";
+        }
 
-		for (String value : wordsInLineWithoutToken) {
-			parseFaceWord(value, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, fileLineId);
-		}
+        StringBuilder sb = new StringBuilder(words.get(0));
 
-		Polygon polygon = new Polygon();
-		polygon.setVertexIndices(polygonVertexIndices);
-		polygon.setTextureVertexIndices(polygonTextureVertexIndices);
-		polygon.setNormalIndices(polygonNormalIndices);
+        for (int i = 1; i < words.size(); i++) {
+            sb.append(" ").append(words.get(i));
+        }
 
-		return polygon;
-	}
+        return sb.toString();
+    }
 
-	protected static void parseFaceWord(
-			String wordInLine,
-			List<Integer> polygonVertexIndices,
-			List<Integer> polygonTextureVertexIndices,
-			List<Integer> polygonNormalIndices,
-			int fileLineId) {
-		try {
-			String[] wordIndices = wordInLine.split("/");
-			switch (wordIndices.length) {
-				case 1 -> polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
-				case 2 -> {
-					polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
-					polygonTextureVertexIndices.add(Integer.parseInt(wordIndices[1]) - 1);
-				}
-				case 3 -> {
-					polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
-					polygonNormalIndices.add(Integer.parseInt(wordIndices[2]) - 1);
-					if (!wordIndices[1].equals("")) {
-						polygonTextureVertexIndices.add(Integer.parseInt(wordIndices[1]) - 1);
-					}
-				}
-				default -> throw new ObjReaderException("Invalid polygon vertex description.", fileLineId);
-			}
+    protected static Vector3f parseVertex(List<String> wordsInLineWithoutToken, int fileLineId) {
+        if (wordsInLineWithoutToken.size() != 3) {
+            throw new ObjReaderException("Error reading a vertex. Only x, y, z coordinates " +
+                    "should be present in the description.", fileLineId);
+        }
 
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse int value.", fileLineId);
+        try {
+            return new Vector3f(
+                    Float.parseFloat(wordsInLineWithoutToken.get(0)),
+                    Float.parseFloat(wordsInLineWithoutToken.get(1)),
+                    Float.parseFloat(wordsInLineWithoutToken.get(2)));
+        } catch (NumberFormatException e) {
+            throw new ObjReaderException("Failed to parse float value.", fileLineId);
+        }
+    }
 
-		} catch(IndexOutOfBoundsException e) {
-			throw new ObjReaderException("Invalid polygon description.", fileLineId);
-		}
-	}
+    protected static Vector2f parseTextureVertex(List<String> wordsInLineWithoutToken, int fileLineId) {
+        if (wordsInLineWithoutToken.size() != 2) {
+            throw new ObjReaderException("Error reading texture vertex. Only u, v arguments should be present " +
+                    "in the description.", fileLineId);
+        }
+
+        try {
+            return new Vector2f(
+                    Float.parseFloat(wordsInLineWithoutToken.get(0)),
+                    Float.parseFloat(wordsInLineWithoutToken.get(1)));
+        } catch (NumberFormatException e) {
+            throw new ObjReaderException("Failed to parse float value.", fileLineId);
+
+        }
+    }
+
+    protected static Vector3f parseNormal(List<String> wordsInLineWithoutToken, int fileLineId) {
+        if (wordsInLineWithoutToken.size() != 3) {
+            throw new ObjReaderException("Error reading a normal. Only x, y, z coordinates " +
+                    "should be present in the description.", fileLineId);
+        }
+
+        try {
+            return new Vector3f(
+                    Float.parseFloat(wordsInLineWithoutToken.get(0)),
+                    Float.parseFloat(wordsInLineWithoutToken.get(1)),
+                    Float.parseFloat(wordsInLineWithoutToken.get(2)));
+        } catch (NumberFormatException e) {
+            throw new ObjReaderException("Failed to parse float value.", fileLineId);
+        }
+    }
+
+    protected static int descriptionType;
+
+    protected static Polygon parseFace(List<String> wordsInLineWithoutToken, int fileLineId) {
+        List<Integer> polygonVertexIndices = new ArrayList<>();
+        List<Integer> polygonTextureVertexIndices = new ArrayList<>();
+        List<Integer> polygonNormalIndices = new ArrayList<>();
+
+        descriptionType = 0;
+        for (String value : wordsInLineWithoutToken) {
+            parseFaceWord(value, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices,
+                    fileLineId);
+        }
+
+        Polygon polygon = new Polygon();
+        polygon.setVertexIndices(polygonVertexIndices);
+        polygon.setTextureVertexIndices(polygonTextureVertexIndices);
+        polygon.setNormalIndices(polygonNormalIndices);
+
+        return polygon;
+    }
+
+    protected static void parseFaceWord(
+            String wordInLine,
+            List<Integer> polygonVertexIndices,
+            List<Integer> polygonTextureVertexIndices,
+            List<Integer> polygonNormalIndices,
+            int fileLineId) {
+        try {
+            String[] wordIndices = wordInLine.split("/");
+            switch (wordIndices.length) {
+                case 1 -> {
+                    if (descriptionType == 0) {
+                        descriptionType = 1;
+                    }
+
+                    if (descriptionType == 1) {
+                        polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
+                    } else {
+                        causeErrPolygonVertexDescription(fileLineId);
+                    }
+                }
+                case 2 -> {
+                    if (descriptionType == 0) {
+                        descriptionType = 2;
+                    }
+
+                    if (descriptionType == 2) {
+                        polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
+                        polygonTextureVertexIndices.add(Integer.parseInt(wordIndices[1]) - 1);
+                    } else {
+                        causeErrPolygonVertexDescription(fileLineId);
+                    }
+                }
+                case 3 -> {
+                    if (descriptionType == 0) {
+                        descriptionType = wordIndices[1].equals("") ? 3 : 4;
+                    }
+
+                    if (descriptionType == 3) {
+                        if (wordIndices[1].equals("")) {
+                            polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
+                            polygonNormalIndices.add(Integer.parseInt(wordIndices[2]) - 1);
+                        } else {
+                            causeErrPolygonVertexDescription(fileLineId);
+                        }
+                    } else if (descriptionType == 4) {
+                        polygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
+                        polygonTextureVertexIndices.add(Integer.parseInt(wordIndices[1]) - 1);
+                        polygonNormalIndices.add(Integer.parseInt(wordIndices[2]) - 1);
+                    } else {
+                        causeErrPolygonVertexDescription(fileLineId);
+                    }
+                }
+                default -> throw new ObjReaderException("Invalid polygon vertex description.", fileLineId);
+            }
+
+        } catch (NumberFormatException e) {
+            throw new ObjReaderException("Failed to parse int value.", fileLineId);
+        } catch (IndexOutOfBoundsException e) {
+            causeErrPolygonVertexDescription(fileLineId);
+        }
+    }
+
+    private static void causeErrPolygonVertexDescription(int fileLineId) {
+        throw new ObjReaderException("Polygon vertex descriptions must be in the same format.",
+                fileLineId);
+    }
 }
