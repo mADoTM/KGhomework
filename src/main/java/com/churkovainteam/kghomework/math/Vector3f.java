@@ -72,11 +72,10 @@ public final class Vector3f {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass() == Vector3f.class) {
-            return ((Vector3f) obj).x == x && ((Vector3f) obj).y == y && ((Vector3f) obj).z == z;
-        }
-
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector3f vector3f = (Vector3f) o;
+        return Float.compare(vector3f.x, x) == 0 && Float.compare(vector3f.y, y) == 0 && Float.compare(vector3f.z, z) == 0;
     }
 }
