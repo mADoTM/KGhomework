@@ -2,10 +2,11 @@ package com.churkovainteam.kghomework.render_engine;
 
 import java.util.ArrayList;
 
-import com.churkovainteam.kghomework.math.Vector3f;
+import com.churkovainteam.kghomework.math.Matrix4f;
+import com.churkovainteam.kghomework.math.Point2f;
 import com.churkovainteam.kghomework.model.Model;
 import javafx.scene.canvas.GraphicsContext;
-import javax.vecmath.*;
+
 import static com.churkovainteam.kghomework.render_engine.GraphicConveyor.*;
 
 public class RenderEngine {
@@ -15,13 +16,12 @@ public class RenderEngine {
             final Camera camera,
             final Model mesh,
             final int width,
-            final int height)
-    {
-        Matrix4f modelMatrix = rotateScaleTranslate();
-        Matrix4f viewMatrix = camera.getViewMatrix();
-        Matrix4f projectionMatrix = camera.getProjectionMatrix();
+            final int height) {
+        final var modelMatrix = rotateScaleTranslate();
+        final var viewMatrix = camera.getViewMatrix();
+        final var projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4f modelViewProjectionMatrix = new Matrix4f(modelMatrix);
+        final var modelViewProjectionMatrix = new Matrix4f(modelMatrix);
         modelViewProjectionMatrix.mul(viewMatrix);
         modelViewProjectionMatrix.mul(projectionMatrix);
 
@@ -29,13 +29,12 @@ public class RenderEngine {
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
 
-            ArrayList<Point2f> resultPoints = new ArrayList<>();
+            final var resultPoints = new ArrayList<Point2f>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                final var vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
-                javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
 
-                Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
+                final var resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);
             }
 

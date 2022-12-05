@@ -4,9 +4,6 @@ import com.churkovainteam.kghomework.common.ObjToken;
 import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 import com.churkovainteam.kghomework.model.Model;
-import com.churkovainteam.kghomework.model.Polygon;
-
-import java.util.ArrayList;
 
 public class ObjWriter {
     private Model model;
@@ -29,11 +26,13 @@ public class ObjWriter {
     }
 
     public String writeObjFile() {
-        StringBuilder lines = new StringBuilder();
+        final var lines = new StringBuilder();
+
         this.appendVerticesInLines(lines);
         this.appendTexturesInLines(lines);
         this.appendNormalsInLines(lines);
         this.appendFacesInLines(lines);
+
         return lines.toString();
     }
 
@@ -41,34 +40,31 @@ public class ObjWriter {
         if (this.model.vertices.size() == 0) {
             throw new IllegalStateException("Can not make an object with out vertices");
         } else {
-            ArrayList<Vector3f> vertices = this.model.vertices;
+            final var vertices = this.model.vertices;
 
             for (Vector3f vertex : vertices) {
                 lines.append(this.getVector3fWithTokenInString(vertex, ObjToken.VERTEX)).append("\n");
             }
-
         }
     }
 
     private void appendTexturesInLines(StringBuilder lines) {
         if (this.model.textureVertices != null) {
-            ArrayList<Vector2f> textures = this.model.textureVertices;
+            final var textures = this.model.textureVertices;
 
             for (Vector2f texture : textures) {
                 lines.append(this.getVector2fWithTokenInString(texture)).append("\n");
             }
-
         }
     }
 
     private void appendNormalsInLines(StringBuilder lines) {
         if (this.model.normals != null) {
-            ArrayList<Vector3f> normals = this.model.normals;
+            final var normals = this.model.normals;
 
             for (Vector3f normal : normals) {
                 lines.append(this.getVector3fWithTokenInString(normal, ObjToken.NORMAL)).append("\n");
             }
-
         }
     }
 
@@ -76,17 +72,17 @@ public class ObjWriter {
         if (this.model.polygons == null) {
             throw new IllegalArgumentException("Can not make an object with out polygons");
         } else {
-            ArrayList<Polygon> polygons = this.model.polygons;
+            final var polygons = this.model.polygons;
 
             for(int i = 0; i < polygons.size(); ++i) {
-                Polygon polygon = (Polygon)polygons.get(i);
+                final var polygon = polygons.get(i);
                 lines.append(ObjToken.FACE).append(" ");
 
                 for(int index = 0; index < polygon.getVertexIndices().size(); ++index) {
-                    lines.append(this.getNumberInString((float)((Integer)polygon.getVertexIndices().get(index) + 1)));
+                    lines.append(this.getNumberInString((float)(polygon.getVertexIndices().get(index) + 1)));
                     Integer textureIndex = null;
                     if (polygon.getTextureVertexIndices().size() > 0) {
-                        textureIndex = (Integer)polygon.getTextureVertexIndices().get(index) + 1;
+                        textureIndex = polygon.getTextureVertexIndices().get(index) + 1;
                         lines.append("/").append(this.getNumberInString(textureIndex)).append(" ");
                     }
 
@@ -107,7 +103,6 @@ public class ObjWriter {
                     lines.append("\n");
                 }
             }
-
         }
     }
 

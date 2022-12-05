@@ -1,9 +1,15 @@
 package com.churkovainteam.kghomework.render_engine;
 
-import javax.vecmath.Vector3f;
-import javax.vecmath.Matrix4f;
+import com.churkovainteam.kghomework.math.Matrix4f;
+import com.churkovainteam.kghomework.math.Vector3f;
 
-public class Camera {
+public final class Camera {
+    private Vector3f position;
+    private Vector3f target;
+    private final float fov;
+    private float aspectRatio;
+    private final float nearPlane;
+    private final float farPlane;
 
     public Camera(
             final Vector3f position,
@@ -55,11 +61,4 @@ public class Camera {
     Matrix4f getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
-
-    private Vector3f position;
-    private Vector3f target;
-    private float fov;
-    private float aspectRatio;
-    private float nearPlane;
-    private float farPlane;
 }
