@@ -16,7 +16,7 @@ public class GraphicConveyor {
     }
 
     public static Matrix4f lookAt(Vector3f eye, Vector3f target) {
-        return lookAt(eye, target, new Vector3f(0F, 1.0F, 0F));
+        return lookAt(eye, target, new Vector3f(0, 1.0F, 0));
     }
 
     public static Matrix4f lookAt(Vector3f eye, Vector3f target, Vector3f up) {
@@ -33,10 +33,10 @@ public class GraphicConveyor {
         resultZ.normalize();
 
         float[] matrix = new float[]{
-                resultX.x, resultY.x, resultZ.x, 0,
-                resultX.y, resultY.y, resultZ.y, 0,
-                resultX.z, resultY.z, resultZ.z, 0,
-                -resultX.dot(eye), -resultY.dot(eye), -resultZ.dot(eye), 1};
+                resultX.x, resultX.y, resultX.z, -resultX.dot(eye),
+                resultY.x, resultY.y, resultY.z, -resultY.dot(eye),
+                resultZ.x, resultZ.y, resultZ.z, -resultZ.dot(eye),
+                0, 0, 0, 1};
         return new Matrix4f(matrix);
     }
 
@@ -50,20 +50,20 @@ public class GraphicConveyor {
         result.m00 = tangentMinusOnDegree / aspectRatio;
         result.m11 = tangentMinusOnDegree;
         result.m22 = (farPlane + nearPlane) / (farPlane - nearPlane);
-        result.m23 = 1.0F;
-        result.m32 = 2 * (nearPlane * farPlane) / (nearPlane - farPlane);
+        result.m32 = 1.0F;
+        result.m23 = 2 * (nearPlane * farPlane) / (nearPlane - farPlane);
         return result;
     }
 
     public static Vector3f multiplyMatrix4ByVector3(final Matrix4f matrix, final Vector3f vertex) {
-        final var x = (vertex.x * matrix.m00) + (vertex.y * matrix.m10) + (vertex.z * matrix.m20) + matrix.m30;
-        final var y = (vertex.x * matrix.m01) + (vertex.y * matrix.m11) + (vertex.z * matrix.m21) + matrix.m31;
-        final var z = (vertex.x * matrix.m02) + (vertex.y * matrix.m12) + (vertex.z * matrix.m22) + matrix.m32;
-        final var w = (vertex.x * matrix.m03) + (vertex.y * matrix.m13) + (vertex.z * matrix.m23) + matrix.m33;
+        final var x = (vertex.x * matrix.m00) + (vertex.y * matrix.m01) + (vertex.z * matrix.m02) + matrix.m03;
+        final var y = (vertex.x * matrix.m10) + (vertex.y * matrix.m11) + (vertex.z * matrix.m12) + matrix.m13;
+        final var z = (vertex.x * matrix.m20) + (vertex.y * matrix.m21) + (vertex.z * matrix.m22) + matrix.m23;
+        final var w = (vertex.x * matrix.m30) + (vertex.y * matrix.m31) + (vertex.z * matrix.m32) + matrix.m33;
         return new Vector3f(x / w, y / w, z / w);
     }
 
     public static Point2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
-        return new Point2f(vertex.x * width + width / 2.0F, -vertex.y * height + height / 2.0F);
+        return new Point2f(vertex.x * width / vertex.z + width / 2.0F, -vertex.y * height / vertex.z + height / 2.0F);
     }
 }

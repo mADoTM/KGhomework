@@ -51,7 +51,7 @@ public final class Camera {
     }
 
     public void moveTarget(final Vector3f translation) {
-        this.target.add(target);
+        this.target.add(translation);
     }
 
     Matrix4f getViewMatrix() {
