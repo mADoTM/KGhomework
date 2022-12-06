@@ -2,6 +2,7 @@ package com.churkovainteam.kghomework.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Polygon {
     private List<Integer> vertexIndices;
@@ -50,4 +51,16 @@ public class Polygon {
     public List<Integer> getNormalIndices() {
         return normalIndices;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder("f ");
+
+        for (int index : vertexIndices) {
+            string.append(index);
+            string.append(" ");
+        }
+        return string.toString();
+    }
 }
+
