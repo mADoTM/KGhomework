@@ -176,8 +176,7 @@ class ObjReaderTest {
         String vertex = "1/1/1/1";
 
         try {
-            ObjReader.descriptionType = 0;
-            ObjReader.parseFaceWord(vertex, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, 1);
+            ObjReader.parseFaceWord(0, vertex, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, 1);
         } catch (ObjReaderException e) {
             String expectedErr = "Error parsing OBJ file on line: 1. Invalid polygon vertex description.";
             assertEquals(expectedErr, e.getMessage());
@@ -193,8 +192,7 @@ class ObjReaderTest {
         String vertex = "a/b/c";
 
         try {
-            ObjReader.descriptionType = 0;
-            ObjReader.parseFaceWord(vertex, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, 1);
+            assertEquals(4, ObjReader.parseFaceWord(0, vertex, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, 1));
         } catch (ObjReaderException e) {
             String expectedErr = "Error parsing OBJ file on line: 1. Failed to parse int value.";
             assertEquals(expectedErr, e.getMessage());
@@ -209,8 +207,7 @@ class ObjReaderTest {
 
         String vertex = "1//1";
 
-        ObjReader.descriptionType = 0;
-        ObjReader.parseFaceWord(vertex, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, 1);
+        assertEquals(3, ObjReader.parseFaceWord(0, vertex, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices, 1));
         assertEquals(0, polygonVertexIndices.get(0));
         assertEquals(0, polygonNormalIndices.get(0));
         assertEquals(0, polygonTextureVertexIndices.size());

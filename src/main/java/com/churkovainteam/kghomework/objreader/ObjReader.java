@@ -141,16 +141,16 @@ public class ObjReader {
         }
     }
 
-    protected static int descriptionType;
+    //protected static int descriptionType;
 
     protected static Polygon parseFace(List<String> wordsInLineWithoutToken, int fileLineId) {
         List<Integer> polygonVertexIndices = new ArrayList<>();
         List<Integer> polygonTextureVertexIndices = new ArrayList<>();
         List<Integer> polygonNormalIndices = new ArrayList<>();
 
-        descriptionType = 0;
+        int descriptionType = 0;
         for (String value : wordsInLineWithoutToken) {
-            parseFaceWord(value, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices,
+            descriptionType = parseFaceWord(descriptionType, value, polygonVertexIndices, polygonTextureVertexIndices, polygonNormalIndices,
                     fileLineId);
         }
 
@@ -162,12 +162,12 @@ public class ObjReader {
         return polygon;
     }
 
-    protected static void parseFaceWord(
-            String wordInLine,
-            List<Integer> polygonVertexIndices,
-            List<Integer> polygonTextureVertexIndices,
-            List<Integer> polygonNormalIndices,
-            int fileLineId) {
+    protected static int parseFaceWord(int descriptionType,
+                                       String wordInLine,
+                                       List<Integer> polygonVertexIndices,
+                                       List<Integer> polygonTextureVertexIndices,
+                                       List<Integer> polygonNormalIndices,
+                                       int fileLineId) {
         try {
             String[] wordIndices = wordInLine.split("/");
             switch (wordIndices.length) {
@@ -222,6 +222,8 @@ public class ObjReader {
         } catch (IndexOutOfBoundsException e) {
             causeErrPolygonVertexDescription(fileLineId);
         }
+
+        return descriptionType;
     }
 
     private static void causeErrPolygonVertexDescription(int fileLineId) {
