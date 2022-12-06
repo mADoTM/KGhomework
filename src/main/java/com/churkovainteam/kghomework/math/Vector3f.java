@@ -1,6 +1,8 @@
 package com.churkovainteam.kghomework.math;
 
 
+import java.util.Objects;
+
 public final class Vector3f {
     public float x;
     public float y;
@@ -65,9 +67,16 @@ public final class Vector3f {
         this.z += t1.z;
     }
 
-    public boolean equals(Vector3f other) {
-        return Math.abs(x - other.x) < MathSettings.EPS
-                && Math.abs(y - other.y) < MathSettings.EPS
-                && Math.abs(z - other.z) < MathSettings.EPS;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector3f vector3f = (Vector3f) o;
+        return Float.compare(vector3f.x, x) == 0 && Float.compare(vector3f.y, y) == 0 && Float.compare(vector3f.z, z) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
     }
 }
