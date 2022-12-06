@@ -4,7 +4,10 @@ public enum ObjToken {
     VERTEX("v"),
     TEXTURE("vt"),
     NORMAL("vn"),
-    FACE("f");
+    FACE("f"),
+    COMMENT("#"),
+    MATERIAL("usemtl"),
+    MATERIAL_LIB("mtllib");
 
     private final String text;
 
