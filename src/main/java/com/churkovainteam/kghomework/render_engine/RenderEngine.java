@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.churkovainteam.kghomework.math.Matrix4f;
 import com.churkovainteam.kghomework.math.Point2f;
+import com.churkovainteam.kghomework.math.Vector3f;
 import com.churkovainteam.kghomework.model.Model;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -21,18 +22,25 @@ public class RenderEngine {
         final var viewMatrix = camera.getViewMatrix();
         final var projectionMatrix = camera.getProjectionMatrix();
 
-        final var modelViewProjectionMatrix = new Matrix4f(modelMatrix);
+        final var modelViewProjectionMatrix = new Matrix4f(projectionMatrix);
         modelViewProjectionMatrix.mul(viewMatrix);
-        modelViewProjectionMatrix.mul(projectionMatrix);
+        modelViewProjectionMatrix.mul(modelMatrix);
 
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
-            final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+            final int nVerticesInPolygon = mesh
+                    .polygons
+                    .get(polygonInd)
+                    .getVertexIndices()
+                    .size();
 
             final var resultPoints = new ArrayList<Point2f>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                final var vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
-
+                final var vertex = mesh.vertices.get(mesh
+                        .polygons
+                        .get(polygonInd)
+                        .getVertexIndices()
+                        .get(vertexInPolygonInd));
 
                 final var resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);

@@ -86,7 +86,7 @@ public final class Matrix4f {
         this.m33 = vertices[15];
     }
 
-    public final void mul(float scalar) {
+    public void mul(float scalar) {
         m00 *= scalar;
         m01 *= scalar;
         m02 *= scalar;
@@ -105,7 +105,7 @@ public final class Matrix4f {
         m33 *= scalar;
     }
 
-    public final void mul(Matrix4f m1) {
+    public void mul(Matrix4f m1) {
 
         final var m00 = this.m00 * m1.m00 + this.m01 * m1.m10 +
                 this.m02 * m1.m20 + this.m03 * m1.m30;
