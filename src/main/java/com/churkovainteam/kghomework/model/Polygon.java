@@ -56,10 +56,24 @@ public class Polygon {
     public String toString() {
         StringBuilder string = new StringBuilder("f ");
 
-        for (int index : vertexIndices) {
-            string.append(index);
+        for (int index = 0; index < vertexIndices.size(); index++) {
+            string.append(vertexIndices.get(index));
+
+            if (textureVertexIndices.size() != 0 || normalIndices.size() != 0) {
+                string.append("/");
+                if (textureVertexIndices.size() != 0) {
+                    string.append(textureVertexIndices.get(index));
+                }
+
+                if (normalIndices.size() != 0) {
+                    string.append("/");
+                    string.append(normalIndices.get(index));
+                }
+            }
+
             string.append(" ");
         }
+
         return string.toString();
     }
 }
