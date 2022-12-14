@@ -4,17 +4,21 @@ package com.churkovainteam.kghomework.math;
 import java.util.Objects;
 
 public final class Vector3f {
-    public float x;
-    public float y;
-    public float z;
+    public double x;
+    public double y;
+    public double z;
 
     public Vector3f() {
     }
 
-    public Vector3f(float x, float y, float z) {
+    public Vector3f(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public Vector3f(Vector3f vector3f) {
+        this(vector3f.x, vector3f.y, vector3f.z);
     }
 
     public void sub(Vector3f to, Vector3f from) {
@@ -31,8 +35,8 @@ public final class Vector3f {
             throw new IllegalArgumentException("Vector3f can not be null");
         }
 
-        float x = v1.y * v2.z - v1.z * v2.y;
-        float y = v2.x * v1.z - v2.z * v1.x;
+        double x = v1.y * v2.z - v1.z * v2.y;
+        double y = v2.x * v1.z - v2.z * v1.x;
 
         this.z = v1.x * v2.y - v1.y * v2.x;
         this.x = x;
@@ -40,7 +44,7 @@ public final class Vector3f {
     }
 
     public void normalize() {
-        float norm = (float)
+        double norm =
                 (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
 
         this.x *= norm;
@@ -48,7 +52,7 @@ public final class Vector3f {
         this.z *= norm;
     }
 
-    public float dot(Vector3f v1) {
+    public double dot(Vector3f v1) {
         if (v1 == null) {
             throw new IllegalArgumentException("Vector3f can not be null");
         }
@@ -68,39 +72,52 @@ public final class Vector3f {
     }
 
     public void rotateAroundX(float angle) {
-        float y = (float) (this.y * Math.cos(angle) + this.z * Math.sin(angle));
-        float z = (float) (-this.y * Math.sin(angle) + this.z * Math.cos(angle));
+        double y = (this.y * Math.cos(angle) + this.z * Math.sin(angle));
+        double z = (-this.y * Math.sin(angle) + this.z * Math.cos(angle));
 
         this.y = y;
         this.z = z;
     }
 
     public void rotateAroundY(double angle) {
-        float x = (float) (this.x * Math.cos(angle) + this.z * Math.sin(angle));
-        float z = (float) (-this.x * Math.sin(angle) + this.z * Math.cos(angle));
+        double x = (this.x * Math.cos(angle) + this.z * Math.sin(angle));
+        double z = (-this.x * Math.sin(angle) + this.z * Math.cos(angle));
 
         this.x = x;
         this.z = z;
     }
 
     public void rotateAroundZ(float angle) {
-        float x =(float) (this.x * Math.cos(angle) + this.y * Math.sin(angle));
-        float y = (float) (-this.x * Math.sin(angle) + this.y * Math.cos(angle));
+        double x = (this.x * Math.cos(angle) + this.y * Math.sin(angle));
+        double y = (-this.x * Math.sin(angle) + this.y * Math.cos(angle));
 
         this.x = x;
         this.y = y;
     }
 
-    public void scaleX(float scale) {
+    public void scaleX(double scale) {
         this.x *= scale;
     }
 
-    public void scaleY(float scale) {
+    public void scaleY(double scale) {
         this.y *= scale;
     }
 
-    public void scaleZ(float scale) {
+    public void scaleZ(double scale) {
         this.z *= scale;
+    }
+
+    public static double angleBetweenTwoVectors(Vector3f vec1, Vector3f vec2) {
+        if (vec1 == null || vec2 == null) {
+            throw new IllegalArgumentException("Vector can't be null");
+        }
+        return (vec1.x * vec2.x + vec1.y * vec1.y + vec1.z * vec1.z)
+                /
+                (vec1.length() * vec2.length());
+    }
+
+    public double length() {
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
 
     @Override
@@ -113,6 +130,15 @@ public final class Vector3f {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector3f vector3f = (Vector3f) o;
-        return Float.compare(vector3f.x, x) == 0 && Float.compare(vector3f.y, y) == 0 && Float.compare(vector3f.z, z) == 0;
+        return Double.compare(vector3f.x, x) == 0 && Double.compare(vector3f.y, y) == 0 && Double.compare(vector3f.z, z) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Vector3f{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }

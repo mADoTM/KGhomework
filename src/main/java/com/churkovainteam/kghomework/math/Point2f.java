@@ -1,13 +1,13 @@
 package com.churkovainteam.kghomework.math;
 
 public final class Point2f {
-    public float x;
-    public float y;
+    public double x;
+    public double y;
 
     public Point2f() {
     }
 
-    public Point2f(float x, float y) {
+    public Point2f(double x, double y) {
         this.x = x;
         this.y = y;
     }

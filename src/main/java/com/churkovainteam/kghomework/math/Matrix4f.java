@@ -1,33 +1,33 @@
 package com.churkovainteam.kghomework.math;
 
 public final class Matrix4f {
-    public float m00;
-    public float m01;
-    public float m02;
-    public float m03;
+    public double m00;
+    public double m01;
+    public double m02;
+    public double m03;
 
-    public float m10;
-    public float m11;
-    public float m12;
-    public float m13;
+    public double m10;
+    public double m11;
+    public double m12;
+    public double m13;
 
-    public float m20;
-    public float m21;
-    public float m22;
-    public float m23;
+    public double m20;
+    public double m21;
+    public double m22;
+    public double m23;
 
-    public float m30;
-    public float m31;
-    public float m32;
-    public float m33;
+    public double m30;
+    public double m31;
+    public double m32;
+    public double m33;
 
     public Matrix4f() {
     }
 
-    public Matrix4f(float m00, float m01, float m02, float m03,
-                    float m10, float m11, float m12, float m13,
-                    float m20, float m21, float m22, float m23,
-                    float m30, float m31, float m32, float m33) {
+    public Matrix4f(double m00, double m01, double m02, double m03,
+                    double m10, double m11, double m12, double m13,
+                    double m20, double m21, double m22, double m23,
+                    double m30, double m31, double m32, double m33) {
         this.m00 = m00;
         this.m01 = m01;
         this.m02 = m02;
@@ -56,7 +56,7 @@ public final class Matrix4f {
                 matrix4f.m30, matrix4f.m31, matrix4f.m32, matrix4f.m33);
     }
 
-    public Matrix4f(float[] vertices) {
+    public Matrix4f(double[] vertices) {
         if (vertices == null) {
             throw new IllegalStateException("v is null");
         }
@@ -86,7 +86,7 @@ public final class Matrix4f {
         this.m33 = vertices[15];
     }
 
-    public void mul(float scalar) {
+    public void mul(double scalar) {
         m00 *= scalar;
         m01 *= scalar;
         m02 *= scalar;
