@@ -6,26 +6,50 @@ import java.util.*;
 
 public class RenderingPreparationUtilities {
     public static List<Polygon> triangulation(Polygon polygon) {
-        List<Integer> vertexIndices = polygon.getVertexIndices();
         List<Polygon> triangularPolygons = new ArrayList<>();
 
-        if (vertexIndices.size() == 3) {
-            triangularPolygons.add(polygon);
-        } else {
+        List<Integer> vertexIndices = polygon.getVertexIndices();
+        int quantityVertexes = vertexIndices.size();
 
-            for (int index = 1; index < vertexIndices.size() - 1; index++) {
-                Polygon triangularPolygon = new Polygon();
-                List<Integer> threeVertexIndices = new ArrayList<>(Arrays.asList(
-                       vertexIndices.get(0), vertexIndices.get(index), vertexIndices.get(index + 1)
-                ));
-                triangularPolygon.setVertexIndices(threeVertexIndices);
+        List<Integer> textureVertexIndices = polygon.getTextureVertexIndices();
+        checkForCorrectListSize(textureVertexIndices, quantityVertexes, "текстурных координат");
 
-                triangularPolygons.add(triangularPolygon);
-            }
+        List<Integer> normalIndices = polygon.getNormalIndices();
+        checkForCorrectListSize(normalIndices, quantityVertexes, "нормалей");
+
+
+        for (int index = 1; index < vertexIndices.size() - 1; index++) {
+            List<Integer> threeVertexIndices = getIndicesListForCurrentPolygon(vertexIndices, index);
+            List<Integer> threeTextureVertexIndices = getIndicesListForCurrentPolygon(textureVertexIndices, index);
+            List<Integer> threeNormalIndices = getIndicesListForCurrentPolygon(normalIndices, index);
+
+            Polygon triangularPolygon = new Polygon();
+            triangularPolygon.setVertexIndices(threeVertexIndices);
+            triangularPolygon.setTextureVertexIndices(threeTextureVertexIndices);
+            triangularPolygon.setNormalIndices(threeNormalIndices);
+
+            triangularPolygons.add(triangularPolygon);
         }
 
-        System.out.println(Arrays.toString(new List[]{triangularPolygons}));
         return triangularPolygons;
+    }
+
+    private static void checkForCorrectListSize(List<Integer> list, int expectedSize, String listName) {
+        if (list.size() != 0 && list.size() != expectedSize) {
+            throw new IllegalArgumentException("Некорректное количество " + listName + " в полигоне");
+        }
+    }
+
+    private static List<Integer> getIndicesListForCurrentPolygon(List<Integer> list, int indexSecondVertex) {
+        List<Integer> indices = new ArrayList<>();
+
+        if (list.size() != 0) {
+            indices.add(list.get(0));
+            indices.add(list.get(indexSecondVertex));
+            indices.add(list.get(indexSecondVertex + 1));
+        }
+
+        return indices;
     }
 }
 
