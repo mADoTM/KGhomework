@@ -4,14 +4,13 @@ import java.util.ArrayList;
 
 import com.churkovainteam.kghomework.math.Matrix4f;
 import com.churkovainteam.kghomework.math.Point2f;
-import com.churkovainteam.kghomework.math.Vector3f;
 import com.churkovainteam.kghomework.model.Model;
 import javafx.scene.canvas.GraphicsContext;
 
 import static com.churkovainteam.kghomework.render_engine.GraphicConveyor.*;
 
 public class RenderEngine {
-
+    // ChangedModel, углы, масштабирование, перемещение, Model.
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,

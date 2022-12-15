@@ -7,7 +7,7 @@ import com.churkovainteam.kghomework.math.Vector3f;
 public class GraphicConveyor {
 
     public static Matrix4f rotateScaleTranslate() {
-        float[] matrix = new float[]{
+        double[] matrix = new double[]{
                 1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
@@ -32,7 +32,7 @@ public class GraphicConveyor {
         resultY.normalize();
         resultZ.normalize();
 
-        float[] matrix = new float[]{
+        double[] matrix = new double[]{
                 resultX.x, resultX.y, resultX.z, -resultX.dot(eye),
                 resultY.x, resultY.y, resultY.z, -resultY.dot(eye),
                 resultZ.x, resultZ.y, resultZ.z, -resultZ.dot(eye),
@@ -41,10 +41,10 @@ public class GraphicConveyor {
     }
 
     public static Matrix4f perspective(
-            final float fov,
-            final float aspectRatio,
-            final float nearPlane,
-            final float farPlane) {
+            final double fov,
+            final double aspectRatio,
+            final double nearPlane,
+            final double farPlane) {
         final var result = new Matrix4f();
         float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov * 0.5F)));
         result.m00 = tangentMinusOnDegree / aspectRatio;
@@ -60,6 +60,7 @@ public class GraphicConveyor {
         final var y = (vertex.x * matrix.m10) + (vertex.y * matrix.m11) + (vertex.z * matrix.m12) + matrix.m13;
         final var z = (vertex.x * matrix.m20) + (vertex.y * matrix.m21) + (vertex.z * matrix.m22) + matrix.m23;
         final var w = (vertex.x * matrix.m30) + (vertex.y * matrix.m31) + (vertex.z * matrix.m32) + matrix.m33;
+        // TODO z/w отдать
         return new Vector3f(x / w, y / w, z / w);
     }
 
