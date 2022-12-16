@@ -41,7 +41,8 @@ public class RenderEngine {
                         .getVertexIndices()
                         .get(vertexInPolygonInd));
 
-                final var resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
+                final var resultPoint = Point2f
+                        .vertexToPoint(modelViewProjectionMatrix.multiplyByVector3(vertex), width, height);
                 resultPoints.add(resultPoint);
             }
 

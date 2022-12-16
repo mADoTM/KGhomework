@@ -1,7 +1,6 @@
 package com.churkovainteam.kghomework.render_engine;
 
 import com.churkovainteam.kghomework.math.Matrix4f;
-import com.churkovainteam.kghomework.math.Point2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 
 public class GraphicConveyor {
@@ -47,24 +46,11 @@ public class GraphicConveyor {
             final double farPlane) {
         final var result = new Matrix4f();
         float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov * 0.5F)));
-        result.m00 = tangentMinusOnDegree / aspectRatio;
-        result.m11 = tangentMinusOnDegree;
-        result.m22 = (farPlane + nearPlane) / (farPlane - nearPlane);
-        result.m32 = 1.0F;
-        result.m23 = 2 * (nearPlane * farPlane) / (nearPlane - farPlane);
+        result.set(0, 0, tangentMinusOnDegree / aspectRatio);
+        result.set(1, 1, tangentMinusOnDegree);
+        result.set(2, 2, (farPlane + nearPlane) / (farPlane - nearPlane));
+        result.set(3, 2, 1);
+        result.set(2, 3, 2 * (nearPlane * farPlane) / (nearPlane - farPlane));
         return result;
-    }
-
-    public static Vector3f multiplyMatrix4ByVector3(final Matrix4f matrix, final Vector3f vertex) {
-        final var x = (vertex.x * matrix.m00) + (vertex.y * matrix.m01) + (vertex.z * matrix.m02) + matrix.m03;
-        final var y = (vertex.x * matrix.m10) + (vertex.y * matrix.m11) + (vertex.z * matrix.m12) + matrix.m13;
-        final var z = (vertex.x * matrix.m20) + (vertex.y * matrix.m21) + (vertex.z * matrix.m22) + matrix.m23;
-        final var w = (vertex.x * matrix.m30) + (vertex.y * matrix.m31) + (vertex.z * matrix.m32) + matrix.m33;
-        // TODO z/w отдать
-        return new Vector3f(x / w, y / w, z / w);
-    }
-
-    public static Point2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
-        return new Point2f(vertex.x * width + width / 2.0F, -vertex.y * height + height / 2.0F);
     }
 }
