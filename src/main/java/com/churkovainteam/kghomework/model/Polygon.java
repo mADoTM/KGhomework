@@ -2,7 +2,6 @@ package com.churkovainteam.kghomework.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Polygon {
     private List<Integer> vertexIndices;

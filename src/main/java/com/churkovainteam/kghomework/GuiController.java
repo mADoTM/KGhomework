@@ -1,7 +1,7 @@
 package com.churkovainteam.kghomework;
 
 import com.churkovainteam.kghomework.math.Vector3f;
-import com.churkovainteam.kghomework.model.Model;
+import com.churkovainteam.kghomework.model.TransformedTriangulatedModel;
 import com.churkovainteam.kghomework.objreader.ObjReader;
 import com.churkovainteam.kghomework.render_engine.Camera;
 import com.churkovainteam.kghomework.render_engine.MovementVector;
@@ -12,6 +12,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
@@ -24,6 +28,15 @@ import java.io.File;
 public class GuiController {
 
     final private float TRANSLATION = 1.0F;
+    public Slider rotateXSlider;
+    public Slider rotateYSlider;
+    public Slider rotateZSlider;
+    public TextField scalerX;
+    public TextField scalerY;
+    public TextField scalerZ;
+    public TextField translateZ;
+    public TextField translateY;
+    public TextField translateX;
 
     @FXML
     AnchorPane anchorPane;
@@ -31,7 +44,7 @@ public class GuiController {
     @FXML
     private Canvas canvas;
 
-    private Model mesh = null;
+    private TransformedTriangulatedModel mesh;
 
     private final Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -59,7 +72,11 @@ public class GuiController {
             camera.setAspectRatio((float) (width / height));
 
             if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                RenderEngine.render(canvas.getGraphicsContext2D(),
+                        camera,
+                        mesh,
+                        (int) width,
+                        (int) height);
             }
         });
 
@@ -82,7 +99,7 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
+            mesh = new TransformedTriangulatedModel(ObjReader.read(fileContent));
             // todo: обработка ошибок
         } catch (IOException exception) {
 
@@ -137,5 +154,28 @@ public class GuiController {
     @FXML
     public void rotateCameraAroundXDown(ActionEvent actionEvent) {
         camera.rotateCameraVertical(-TRANSLATION);
+    }
+
+    public void onRotateSlider(MouseEvent keyEvent) {
+        if(mesh == null) {
+            return;
+        }
+
+        mesh.setRotate(new Vector3f((float) rotateXSlider.getValue(),
+                (float) rotateYSlider.getValue(),
+                (float) rotateZSlider.getValue()));
+    }
+
+    public void onScaleTextChange(KeyEvent inputMethodEvent) {
+        if(mesh == null) {
+            return;
+        }
+        mesh.setScale(new Vector3f(Float.parseFloat(scalerX.getText()),
+                Float.parseFloat(scalerY.getText()),
+                Float.parseFloat(scalerZ.getText())));
+
+        mesh.setTranslatedVector(new Vector3f(Float.parseFloat(translateX.getText()),
+                Float.parseFloat(translateY.getText()),
+                Float.parseFloat(translateZ.getText())));
     }
 }
