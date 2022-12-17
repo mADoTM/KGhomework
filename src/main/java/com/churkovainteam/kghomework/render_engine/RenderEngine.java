@@ -10,35 +10,33 @@ import com.churkovainteam.kghomework.math.Vector3f;
 import com.churkovainteam.kghomework.model.Model;
 import com.churkovainteam.kghomework.model.Polygon;
 import com.churkovainteam.kghomework.render_engine.rasterization.BarycentricUtilities;
-
 import com.churkovainteam.kghomework.render_engine.rasterization.PolygonRasterization;
+import com.churkovainteam.kghomework.model.TransformedTriangulatedModel;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import static com.churkovainteam.kghomework.render_engine.GraphicConveyor.*;
-
 public class RenderEngine {
-
+    // ChangedModel, углы, масштабирование, перемещение, Model.
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
-            final Model mesh,
+            final TransformedTriangulatedModel mesh,
             final int width,
             final int height) {
-        final var modelMatrix = rotateScaleTranslate();
         final var viewMatrix = camera.getViewMatrix();
         final var projectionMatrix = camera.getProjectionMatrix();
 
         final var modelViewProjectionMatrix = new Matrix4f(projectionMatrix);
         modelViewProjectionMatrix.mul(viewMatrix);
-        modelViewProjectionMatrix.mul(modelMatrix);
+        modelViewProjectionMatrix.mul(Matrix4f.identityMatrix());
 
-        final int nPolygons = mesh.polygons.size();
         float[][] zBuffer = new float[height][width];
-
+        final int nPolygons = mesh.getPolygons().size();
+        
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh
-                    .polygons
+                    .getPolygons()
                     .get(polygonInd)
                     .getVertexIndices()
                     .size();
@@ -46,8 +44,8 @@ public class RenderEngine {
             final var resultPoints = new ArrayList<Point2f>();
             List<Vector3f> resultPointsWithZ = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                final var vertex = mesh.vertices.get(mesh
-                        .polygons
+                final var vertex = mesh.getVertices().get(mesh
+                        .getPolygons()
                         .get(polygonInd)
                         .getVertexIndices()
                         .get(vertexInPolygonInd));
