@@ -4,16 +4,6 @@ import com.churkovainteam.kghomework.math.Matrix4f;
 import com.churkovainteam.kghomework.math.Vector3f;
 
 public class GraphicConveyor {
-
-    public static Matrix4f rotateScaleTranslate() {
-        double[] matrix = new double[]{
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1};
-        return new Matrix4f(matrix);
-    }
-
     public static Matrix4f lookAt(Vector3f eye, Vector3f target) {
         return lookAt(eye, target, new Vector3f(0, 1.0F, 0));
     }
@@ -31,7 +21,7 @@ public class GraphicConveyor {
         resultY.normalize();
         resultZ.normalize();
 
-        double[] matrix = new double[]{
+        float[] matrix = new float[]{
                 resultX.x, resultX.y, resultX.z, -resultX.dot(eye),
                 resultY.x, resultY.y, resultY.z, -resultY.dot(eye),
                 resultZ.x, resultZ.y, resultZ.z, -resultZ.dot(eye),
@@ -40,10 +30,10 @@ public class GraphicConveyor {
     }
 
     public static Matrix4f perspective(
-            final double fov,
-            final double aspectRatio,
-            final double nearPlane,
-            final double farPlane) {
+            final float fov,
+            final float aspectRatio,
+            final float nearPlane,
+            final float farPlane) {
         final var result = new Matrix4f();
         float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov * 0.5F)));
         result.set(0, 0, tangentMinusOnDegree / aspectRatio);

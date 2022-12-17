@@ -2,17 +2,17 @@ package com.churkovainteam.kghomework.math;
 
 public final class Matrix4f {
 
-    private double[][] matrix;
+    private float[][] matrix;
 
     public Matrix4f() {
-        this.matrix = new double[4][4];
+        this.matrix = new float[4][4];
     }
 
-    public Matrix4f(double m00, double m01, double m02, double m03,
-                    double m10, double m11, double m12, double m13,
-                    double m20, double m21, double m22, double m23,
-                    double m30, double m31, double m32, double m33) {
-        this.matrix = new double[4][4];
+    public Matrix4f(float m00, float m01, float m02, float m03,
+                    float m10, float m11, float m12, float m13,
+                    float m20, float m21, float m22, float m23,
+                    float m30, float m31, float m32, float m33) {
+        this.matrix = new float[4][4];
         this.matrix[0][0] = m00;
         this.matrix[0][1] = m01;
         this.matrix[0][2] = m02;
@@ -41,7 +41,7 @@ public final class Matrix4f {
                 matrix4f.matrix[3][0], matrix4f.matrix[3][1], matrix4f.matrix[3][2], matrix4f.matrix[3][3]);
     }
 
-    public Matrix4f(double[] vertices) {
+    public Matrix4f(float[] vertices) {
         if (vertices == null) {
             throw new IllegalStateException("v is null");
         }
@@ -49,21 +49,21 @@ public final class Matrix4f {
         if (vertices.length < 16) {
             throw new IllegalArgumentException("Can not create a Matrix 4x4 with that length = " + vertices.length);
         }
-        this.matrix = new double[4][4];
+        this.matrix = new float[4][4];
 
         for (int i = 0; i < matrix.length; i++) {
             System.arraycopy(vertices, i * 4, matrix[i], 0, matrix[i].length);
         }
     }
 
-    public void mul(double scalar) {
+    public void mul(float scalar) {
         for (int i = 0; i < matrix.length; i++)
             for (int j = 0; j < matrix[i].length; j++)
                 matrix[i][j] *= scalar;
     }
 
     public void mul(Matrix4f m1) {
-        var temp = new double[4][4];
+        var temp = new float[4][4];
         for (int i = 0; i < matrix.length; i++) {
             for (int u = 0; u < matrix[i].length; u++) {
                 for (int j = 0; j < matrix.length; j++) {
@@ -84,15 +84,24 @@ public final class Matrix4f {
         return new Vector3f(x / w, y / w, z / w);
     }
 
-    public double[][] getMatrix() {
+    public static Matrix4f identityMatrix() {
+        float[] matrix = new float[]{
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1};
+        return new Matrix4f(matrix);
+    }
+
+    public float[][] getMatrix() {
         return matrix;
     }
 
-    public double get(int n, int m) {
+    public float get(int n, int m) {
         return matrix[n][m];
     }
 
-    public void set(int n, int m, double value) {
+    public void set(int n, int m, float value) {
         this.matrix[n][m] = value;
     }
 }
