@@ -6,16 +6,16 @@ import com.churkovainteam.kghomework.math.Vector3f;
 public final class Camera {
     private final Vector3f position;
     private final Vector3f target;
-    private final double fov;
-    private double aspectRatio;
-    private final double nearPlane;
-    private final double farPlane;
+    private final float fov;
+    private float aspectRatio;
+    private final float nearPlane;
+    private final float farPlane;
 
-    private double horizontalAngle;
+    private float horizontalAngle;
 
-    private double verticalAngle;
+    private float verticalAngle;
 
-    private final double distance;
+    private final float distance;
 
 
     public Camera(
@@ -34,7 +34,7 @@ public final class Camera {
 
         this.horizontalAngle = 0;
         this.verticalAngle = 0;
-        this.distance = Math.sqrt((position.x - target.x) * (position.x - target.x)
+        this.distance = (float) Math.sqrt((position.x - target.x) * (position.x - target.x)
         +(position.y - target.y) * (position.y - target.y)
         +(position.z - target.z) * (position.z - target.z));
     }
@@ -58,9 +58,9 @@ public final class Camera {
                 this.target.add(temp);
             }
             case BACKWARD -> {
-                final var temp = new Vector3f((translation * (float) Math.sin(radianHorizontalAngle)),
+                final var temp = new Vector3f((float) (translation * Math.sin(radianHorizontalAngle)),
                         0,
-                        (translation * (float) Math.cos(radianHorizontalAngle)));
+                        (float) (translation * Math.cos(radianHorizontalAngle)));
                 this.position.add(temp);
                 this.target.add(temp);
             }
@@ -98,10 +98,10 @@ public final class Camera {
         final var deltaTargetPosition = new Vector3f();
         deltaTargetPosition.sub(target, position);
 
-        double inRadians = Math.toRadians(horizontalAngle);
-        final var newTarget = new Vector3f(Math.sin(inRadians),
+        float inRadians = (float) Math.toRadians(horizontalAngle);
+        final var newTarget = new Vector3f((float) Math.sin(inRadians),
                 0,
-                1 - Math.cos(inRadians));
+                (float) (1 - Math.cos(inRadians)));
 
         this.target.x = newTarget.x * distance;
         this.target.z = newTarget.z * distance;
@@ -129,10 +129,10 @@ public final class Camera {
         final var deltaTargetPosition = new Vector3f();
         deltaTargetPosition.sub(target, position);
 
-        double inRadians = Math.toRadians(verticalAngle);
-        final var newTarget = new Vector3f(0,
-                Math.sin(inRadians),
-                1 - Math.cos(inRadians));
+        float inRadians = (float) Math.toRadians(verticalAngle);
+        final var newTarget = new Vector3f((float) 0,
+                (float) Math.sin(inRadians),
+                (float) (1 - Math.cos(inRadians)));
 
         this.target.y = newTarget.y * distance;
         this.target.z = newTarget.z * distance;
