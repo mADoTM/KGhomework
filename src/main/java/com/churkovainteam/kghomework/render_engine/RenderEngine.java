@@ -1,20 +1,18 @@
 package com.churkovainteam.kghomework.render_engine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.churkovainteam.kghomework.math.Matrix4f;
 import com.churkovainteam.kghomework.math.Point2f;
 import com.churkovainteam.kghomework.math.Vector3f;
-import com.churkovainteam.kghomework.model.Model;
-import com.churkovainteam.kghomework.model.Polygon;
-import com.churkovainteam.kghomework.render_engine.rasterization.BarycentricUtilities;
 import com.churkovainteam.kghomework.render_engine.rasterization.PolygonRasterization;
 import com.churkovainteam.kghomework.model.TransformedTriangulatedModel;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import static com.churkovainteam.kghomework.math.Point2f.vertexToPoint;
 
 public class RenderEngine {
     // ChangedModel, углы, масштабирование, перемещение, Model.
@@ -50,7 +48,7 @@ public class RenderEngine {
                         .getVertexIndices()
                         .get(vertexInPolygonInd));
 
-                Vector3f rotatedPoint = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
+                Vector3f rotatedPoint = modelViewProjectionMatrix.multiplyByVector3(vertex);
 
                 final var resultPoint = vertexToPoint(rotatedPoint, width, height);
                 resultPoints.add(resultPoint);
@@ -82,56 +80,4 @@ public class RenderEngine {
 
         }
     }
-
-//    private static void drawLine(
-//            GraphicsContext graphicsContext, Vector3f firstPoint,Vector3f secondPoint, boolean isLeftBoard
-//    ) {
-//        int x, y, deltaX, deltaY, additionX, additionY, incrementX, incrementY, error, errorIncrease, errorDecrease;
-//        int initialHeight = (int) firstPoint.y;
-//
-//        deltaX = (int) (secondPoint.x - firstPoint.x);
-//        deltaY = (int) (secondPoint.y - initialHeight);
-//
-//        incrementX = Integer.compare(deltaX, 0);
-//        incrementY = Integer.compare(deltaY, 0);
-//
-//        deltaX = Math.abs(deltaX);
-//        deltaY = Math.abs(deltaY);
-//
-//        if (deltaX > deltaY) {
-//            additionX = incrementX;
-//            additionY = 0;
-//            errorIncrease = deltaX;
-//            errorDecrease = deltaY;
-//        } else {
-//            additionX = 0;
-//            additionY = incrementY;
-//            errorIncrease = deltaY;
-//            errorDecrease = deltaX;
-//        }
-//
-//        error = errorIncrease / 2;
-//        x = (int) firstPoint.x;
-//        y = initialHeight;
-//
-//        for (int i = 0; i < errorIncrease; i++) {
-//            error -= errorDecrease;
-//
-//            if (error < 0) {
-//                error += errorIncrease;
-//                x += incrementX;
-//                y += incrementY;
-//            } else {
-//                x += additionX;
-//                y += additionY;
-//            }
-//
-//            float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
-//
-//            if (zBuffer[y][x] == 0 || zBuffer[y][x] > z) {
-//                zBuffer[y][x] = z;
-//                graphicsContext.getPixelWriter().setColor(x, y, color);
-//            }
-//        }
-//    }
 }
