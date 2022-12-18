@@ -146,7 +146,16 @@ public class PolygonRasterization {
             int rightBoard = rightArray[i];
             int y = i + startY;
 
+            if (y < 0 || y >= zBuffer.length) {
+                continue;
+            }
+
             for (int x = leftBoard; x <= rightBoard; x++) {
+
+                if (x < 0 || x >= zBuffer[0].length) {
+                    continue;
+                }
+
                 float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
 
                 if (zBuffer[y][x] == 0 || zBuffer[y][x] > z) {
