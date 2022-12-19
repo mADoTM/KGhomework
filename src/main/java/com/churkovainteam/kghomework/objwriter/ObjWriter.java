@@ -91,7 +91,7 @@ public class ObjWriter {
                             lines.append("/");
                         }
 
-                        lines.append("/").append(this.getNumberInString((float)((Integer)polygon.getNormalIndices().get(index) + 1)));
+                        lines.append("/").append(this.getNumberInString((float)(polygon.getNormalIndices().get(index) + 1)));
                     }
 
                     if (index < polygon.getVertexIndices().size() - 1) {
@@ -116,7 +116,7 @@ public class ObjWriter {
         return var10000 + " " + this.getNumberInString(vector2f.x) + " " + this.getNumberInString(vector2f.y);
     }
 
-    protected String getNumberInString(float number) {
+    protected String getNumberInString(double number) {
         String result = "";
         if (number % 1.0F == 0.0F) {
             result = result + (int)number;

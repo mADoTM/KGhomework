@@ -17,6 +17,10 @@ public final class Vector3f {
         this.z = z;
     }
 
+    public Vector3f(Vector3f vector3f) {
+        this(vector3f.x, vector3f.y, vector3f.z);
+    }
+
     public void sub(Vector3f to, Vector3f from) {
         if (to == null || from == null) {
             throw new IllegalArgumentException("Vector3f can not be null");
@@ -40,8 +44,8 @@ public final class Vector3f {
     }
 
     public void normalize() {
-        float norm = (float)
-                (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
+        float norm =
+                (float) (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
 
         this.x *= norm;
         this.y *= norm;
@@ -75,7 +79,7 @@ public final class Vector3f {
         this.z = z;
     }
 
-    public void rotateAroundY(double angle) {
+    public void rotateAroundY(float angle) {
         float x = (float) (this.x * Math.cos(angle) + this.z * Math.sin(angle));
         float z = (float) (-this.x * Math.sin(angle) + this.z * Math.cos(angle));
 
@@ -84,7 +88,7 @@ public final class Vector3f {
     }
 
     public void rotateAroundZ(float angle) {
-        float x =(float) (this.x * Math.cos(angle) + this.y * Math.sin(angle));
+        float x = (float) (this.x * Math.cos(angle) + this.y * Math.sin(angle));
         float y = (float) (-this.x * Math.sin(angle) + this.y * Math.cos(angle));
 
         this.x = x;
@@ -103,6 +107,19 @@ public final class Vector3f {
         this.z *= scale;
     }
 
+    public static float angleBetweenTwoVectors(Vector3f vec1, Vector3f vec2) {
+        if (vec1 == null || vec2 == null) {
+            throw new IllegalArgumentException("Vector can't be null");
+        }
+        return (vec1.x * vec2.x + vec1.y * vec1.y + vec1.z * vec1.z)
+                /
+                (vec1.length() * vec2.length());
+    }
+
+    public float length() {
+        return (float) Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(x, y, z);
@@ -113,6 +130,17 @@ public final class Vector3f {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector3f vector3f = (Vector3f) o;
-        return Float.compare(vector3f.x, x) == 0 && Float.compare(vector3f.y, y) == 0 && Float.compare(vector3f.z, z) == 0;
+        return Float.compare(vector3f.x, x) == 0 &&
+                Float.compare(vector3f.y, y) == 0 &&
+                Float.compare(vector3f.z, z) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Vector3f{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }

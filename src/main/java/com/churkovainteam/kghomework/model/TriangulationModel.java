@@ -1,7 +1,5 @@
 package com.churkovainteam.kghomework.model;
 
-import com.churkovainteam.kghomework.model.Model;
-import com.churkovainteam.kghomework.model.Polygon;
 import com.churkovainteam.kghomework.render_engine.rasterization.RenderingPreparationUtilities;
 
 import java.util.ArrayList;
