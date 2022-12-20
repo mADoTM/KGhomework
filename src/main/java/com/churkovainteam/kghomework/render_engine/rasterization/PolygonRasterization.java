@@ -1,11 +1,16 @@
 package com.churkovainteam.kghomework.render_engine.rasterization;
 
+import com.churkovainteam.kghomework.math.MathSettings;
 import com.churkovainteam.kghomework.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collector;
 
 public class PolygonRasterization {
 
@@ -17,6 +22,9 @@ public class PolygonRasterization {
         Vector3f firstPoint = points.get(0);
         Vector3f secondPoint = points.get(1);
         Vector3f thirdPoint = points.get(2);
+
+//        System.out.println("min x - " + points.stream().min(Comparator.comparing(x -> x.x)));
+//        System.out.println("min x - " + points.stream().max(Comparator.comparing(x -> x.x)));
 
         float xAxisIncrement12 = getXAxisIncrement(firstPoint, secondPoint);
         float xAxisIncrement13 = getXAxisIncrement(firstPoint, thirdPoint);
@@ -84,8 +92,16 @@ public class PolygonRasterization {
 
         deltaX = (int) (secondPoint.x - firstPoint.x);
         deltaY = (int) (secondPoint.y - initialHeight);
+//        System.out.println("(secondPoint.y - initialHeight)" + (secondPoint.y + " " + initialHeight));
+        //log.println(deltaY);
+        int[] array = new int[0];
+        try {
 
-        int[] array = new int[deltaY + 1];
+            array = new int[deltaY + 1];
+        }
+        catch (OutOfMemoryError e) {
+            System.out.println("outOfMemory " + deltaY);
+        }
         Arrays.fill(array, -1);
 
         incrementX = Integer.compare(deltaX, 0);
@@ -134,7 +150,18 @@ public class PolygonRasterization {
             }
         }
 
+//        System.out.println("array lenght " + array.length);
         return array;
+    }
+
+    private static final PrintWriter log;
+
+    static {
+        try {
+            log = new PrintWriter(".\\my_log.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void drawPartTriangle(
@@ -144,6 +171,7 @@ public class PolygonRasterization {
         for (int i = 0; i < leftArray.length; i++) {
             int leftBoard = leftArray[i];
             int rightBoard = rightArray[i];
+            //log.println(leftBoard + " " + rightBoard);
             int y = i + startY;
 
             if (y < 0 || y >= zBuffer.length) {
@@ -151,12 +179,15 @@ public class PolygonRasterization {
             }
 
             for (int x = leftBoard; x <= rightBoard; x++) {
-
                 if (x < 0 || x >= zBuffer[0].length) {
                     continue;
                 }
 
                 float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
+                //System.out.println(firstPoint + " " + secondPoint + " " + thirdPoint);
+                if(z < 0 || z > 1) {
+                    continue;
+                }
 
                 if (zBuffer[y][x] == 0 || zBuffer[y][x] > z) {
                     zBuffer[y][x] = z;

@@ -44,7 +44,6 @@ public final class Camera {
     }
 
     public void movePosition(MovementVector vector, float translation) {
-        System.out.println(horizontalAngle);
         var radianHorizontalAngle = Math.toRadians(horizontalAngle);
         switch (vector) {
             case UP -> {

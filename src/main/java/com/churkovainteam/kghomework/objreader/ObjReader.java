@@ -21,7 +21,7 @@ public class ObjReader {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             List<String> wordsInLine = new ArrayList<>(List.of(line.split("\\s+")));
-            if (wordsInLine.isEmpty() || wordsInLine.get(0).trim().equals("")) {
+            if (wordsInLine.isEmpty() || wordsInLine.get(0).trim().equals("")|| wordsInLine.get(0).trim().equals("g")) {
                 continue;
             }
 
