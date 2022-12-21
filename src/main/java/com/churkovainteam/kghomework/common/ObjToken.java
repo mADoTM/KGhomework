@@ -7,7 +7,8 @@ public enum ObjToken {
     FACE("f"),
     COMMENT("#"),
     MATERIAL("usemtl"),
-    MATERIAL_LIB("mtllib");
+    MATERIAL_LIB("mtllib"),
+    DEFAULT("default");
 
     private final String text;
 
@@ -26,6 +27,6 @@ public enum ObjToken {
             }
         }
 
-        throw new IllegalArgumentException("Illegal OBJ token name: " + strToken + ".");
+        return DEFAULT;
     }
 }
