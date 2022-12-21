@@ -21,25 +21,22 @@ public class ObjReader {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             List<String> wordsInLine = new ArrayList<>(List.of(line.split("\\s+")));
-            if (wordsInLine.isEmpty() || wordsInLine.get(0).trim().equals("")|| wordsInLine.get(0).trim().equals("g")) {
+            if (wordsInLine.isEmpty() || wordsInLine.get(0).equals("")) {
                 continue;
             }
 
-            try {
-                ObjToken token = ObjToken.fromString(wordsInLine.get(0));
-                wordsInLine.remove(0);
+            ObjToken token = ObjToken.fromString(wordsInLine.get(0));
+            wordsInLine.remove(0);
 
-                switch (token) {
-                    case VERTEX -> model.vertices.add(parseVertex(wordsInLine, fileLineId));
-                    case TEXTURE -> model.textureVertices.add(parseTextureVertex(wordsInLine, fileLineId));
-                    case NORMAL -> model.normals.add(parseNormal(wordsInLine, fileLineId));
-                    case FACE -> model.polygons.add(parseFace(wordsInLine, fileLineId));
-                    case COMMENT -> model.comments.put(fileLineId, listToString(wordsInLine));
-                    case MATERIAL -> model.materials.put(fileLineId, parseMaterial(model, wordsInLine, fileLineId));
-                    case MATERIAL_LIB -> model.mtlFileName = parseMaterialLib(wordsInLine, fileLineId);
-                }
-            } catch (IllegalArgumentException e) {
-                throw new ObjReaderException(e.getMessage(), fileLineId);
+            switch (token) {
+                case DEFAULT -> {}
+                case VERTEX -> model.vertices.add(parseVertex(wordsInLine, fileLineId));
+                case TEXTURE -> model.textureVertices.add(parseTextureVertex(wordsInLine, fileLineId));
+                case NORMAL -> model.normals.add(parseNormal(wordsInLine, fileLineId));
+                case FACE -> model.polygons.add(parseFace(wordsInLine, fileLineId));
+                case COMMENT -> model.comments.put(fileLineId, listToString(wordsInLine));
+                case MATERIAL -> model.materials.put(fileLineId, parseMaterial(model, wordsInLine, fileLineId));
+                case MATERIAL_LIB -> model.mtlFileName = parseMaterialLib(wordsInLine, fileLineId);
             }
 
             fileLineId++;
