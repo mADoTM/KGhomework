@@ -42,11 +42,12 @@ public class RenderEngine {
             final var resultPoints = new ArrayList<Point2f>();
             List<Vector3f> resultPointsWithZ = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                final var vertex = mesh.getVertices().get(mesh
+                var index = mesh
                         .getPolygons()
                         .get(polygonInd)
                         .getVertexIndices()
-                        .get(vertexInPolygonInd));
+                        .get(vertexInPolygonInd);
+                final var vertex = mesh.getTransformedVector(index);
 
                 Vector3f rotatedPoint = modelViewProjectionMatrix.multiplyByVector3(vertex);
 
@@ -57,7 +58,6 @@ public class RenderEngine {
                 // Здесь мне нужно приведение к int, т.к. растеризация была написана для целых x и y, чтобы не было
                 // никаких мили выходов за края полигонов, которые могут возникнуть из-за float
             }
-
 
             PolygonRasterization.drawPolygon(graphicsContext, resultPointsWithZ, Color.PURPLE, zBuffer);
 

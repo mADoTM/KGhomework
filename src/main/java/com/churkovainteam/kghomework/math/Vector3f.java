@@ -48,7 +48,7 @@ public final class Vector3f {
         float norm =
                 (float) (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
 
-        if(MathSettings.isEqual(norm, 0)) {
+        if(MathSettings.isEqual(length(), 0)) {
             norm = 0;
         }
 
