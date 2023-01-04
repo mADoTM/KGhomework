@@ -17,8 +17,10 @@ public class ObjReader {
 
         Model model = new Model();
 
-        int fileLineId = 1;
+        int fileLineId = 0;
         while (scanner.hasNextLine()) {
+            fileLineId++;
+
             String line = scanner.nextLine();
             List<String> wordsInLine = new ArrayList<>(List.of(line.split("\\s+")));
             if (wordsInLine.isEmpty() || wordsInLine.get(0).equals("")) {
@@ -38,8 +40,6 @@ public class ObjReader {
                 case MATERIAL -> model.materials.put(fileLineId, parseMaterial(model, wordsInLine, fileLineId));
                 case MATERIAL_LIB -> model.mtlFileName = parseMaterialLib(wordsInLine, fileLineId);
             }
-
-            fileLineId++;
         }
 
         return model;
@@ -107,7 +107,7 @@ public class ObjReader {
     }
 
     protected static Vector2f parseTextureVertex(List<String> wordsInLineWithoutToken, int fileLineId) {
-        if (wordsInLineWithoutToken.size() != 2) {
+        if (wordsInLineWithoutToken.size() < 2 || wordsInLineWithoutToken.size() > 3) {
             throw new ObjReaderException("Error reading texture vertex. Only u, v arguments should be present " +
                     "in the description.", fileLineId);
         }
