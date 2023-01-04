@@ -47,7 +47,7 @@ public final class Vector3f {
     public void normalize() {
         float norm =
                 (float) (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
-
+                
         if(MathSettings.isEqual(length(), 0)) {
             norm = 0;
         }
@@ -117,9 +117,7 @@ public final class Vector3f {
         if (vec1 == null || vec2 == null) {
             throw new IllegalArgumentException("Vector can't be null");
         }
-        return (vec1.x * vec2.x + vec1.y * vec1.y + vec1.z * vec1.z)
-                /
-                (vec1.length() * vec2.length());
+        return (vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z) / (vec1.length() * vec2.length());
     }
 
     public static Vector3f fromTwoPoints(Vector3f vertex1, Vector3f vertex2){

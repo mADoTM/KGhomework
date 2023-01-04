@@ -1,10 +1,11 @@
 package com.churkovainteam.kghomework.model;
 
+import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 import java.util.List;
 
 public class TransformedTriangulatedModel {
-    private final TriangulationModel triangulationModel;
+    private final TriangulatedModelWithCorrectNormal triangulatedModel;
 
     private Vector3f translatedVector;
 
@@ -20,7 +21,7 @@ public class TransformedTriangulatedModel {
         if (model == null) {
             throw new IllegalArgumentException("Can't create a transformed model, because source is null");
         }
-        this.triangulationModel = new TriangulationModel(model);
+        this.triangulatedModel = new TriangulatedModelWithCorrectNormal(model);
         this.translatedVector = new Vector3f();
 
         this.scaleX = 1;
@@ -29,9 +30,40 @@ public class TransformedTriangulatedModel {
     }
 
     public List<Polygon> getPolygons() {
-        return triangulationModel.getTriangulationPolygons();
+        return triangulatedModel.getTriangulatedPolygons();
     }
 
+    public List<Vector3f> getVertices() {
+        final var result = new ArrayList<Vector3f>();
+
+        for (var defaultVector : triangulatedModel
+                .getInitialModel()
+                .vertices) {
+            final var transformedVector = new Vector3f(defaultVector);
+            transformedVector.scaleX(scaleX);
+            transformedVector.scaleY(scaleY);
+            transformedVector.scaleZ(scaleZ);
+
+            transformedVector.rotateAroundX(rotateAngleX);
+            transformedVector.rotateAroundY(rotateAngleY);
+            transformedVector.rotateAroundZ(rotateAngleZ);
+
+            transformedVector.add(translatedVector);
+
+            result.add(transformedVector);
+        }
+
+        return result;
+    }
+
+    public List<Vector3f> getNormals() {
+        return triangulatedModel.getInitialModel().normals;
+    }
+
+    public List<Vector2f> getTexture() {
+        return triangulatedModel.getInitialModel().textureVertices;
+    }
+    
     public void setRotate(Vector3f rotateVector) {
         this.rotateAngleX = rotateVector.x;
         this.rotateAngleY = rotateVector.y;

@@ -14,12 +14,16 @@ import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
@@ -56,12 +60,21 @@ public class GuiController {
 
     @FXML
     private void initialize() {
+        Image picture;
+//"templates/adidasBox.png"
+        try {
+            picture = new Image(new FileInputStream("templates/nike.png"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
+        Image finalPicture = picture;
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
@@ -77,7 +90,12 @@ public class GuiController {
                         camera,
                         mesh,
                         (int) width,
-                        (int) height);
+                        (int) height,
+                        finalPicture,
+                        false,
+                        false,
+                        false
+                );
             }
         });
 

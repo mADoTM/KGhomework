@@ -1,100 +1,107 @@
 package com.churkovainteam.kghomework.render_engine.rasterization;
 
-import com.churkovainteam.kghomework.math.MathSettings;
+
+import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collector;
 
 public class PolygonRasterization {
 
     public static void drawPolygon(
-            GraphicsContext graphicsContext, List<Vector3f> points, Color color, float[][] zBuffer
+            GraphicsContext graphicsContext, List<PolygonVertex> points, Color color, float[][] zBuffer,
+            Vector3f position, Image picture, boolean usedTexture, boolean usedLighting
     ) {
         sortPoints(points);
 
-        Vector3f firstPoint = points.get(0);
-        Vector3f secondPoint = points.get(1);
-        Vector3f thirdPoint = points.get(2);
+        PolygonVertex firstPoint = points.get(0);
+        PolygonVertex secondPoint = points.get(1);
+        PolygonVertex thirdPoint = points.get(2);
 
-//        System.out.println("min x - " + points.stream().min(Comparator.comparing(x -> x.x)));
-//        System.out.println("min x - " + points.stream().max(Comparator.comparing(x -> x.x)));
+//        if (isPoint(firstPoint, secondPoint, thirdPoint)) {
+//            DrawingPartsPolygons.drawPoint(graphicsContext, getPointWithMinimalZ(firstPoint, secondPoint, thirdPoint),
+//                    color, zBuffer);
+//            return;
+//        }
+//
+//        if (isLine(firstPoint, secondPoint, thirdPoint)) {
+//            DrawingPartsPolygons.drawLine(graphicsContext, firstPoint, thirdPoint, color, zBuffer, false);
+//            return;
+//        }
 
         float xAxisIncrement12 = getXAxisIncrement(firstPoint, secondPoint);
         float xAxisIncrement13 = getXAxisIncrement(firstPoint, thirdPoint);
 
         int[] firstLeftBoard, firstRightBoard, secondLeftBoard, secondRightBoard;
 
-        if (firstPoint.y != secondPoint.y) {
-            Vector3f auxiliaryPoint = getAuxiliaryPoint(firstPoint, secondPoint, thirdPoint);
+        if (firstPoint.getY() != secondPoint.getY()) {
+            PolygonVertex auxiliaryPoint = getAuxiliaryPoint(firstPoint, secondPoint, thirdPoint);
 
             if (xAxisIncrement13 > xAxisIncrement12) {
-                firstLeftBoard = drawBresenhamLine(firstPoint, secondPoint, true);
-                firstRightBoard = drawBresenhamLine(firstPoint, auxiliaryPoint, false);
-                secondRightBoard = drawBresenhamLine(auxiliaryPoint, thirdPoint, false);
-                secondLeftBoard = drawBresenhamLine(secondPoint, thirdPoint, true);
+                firstLeftBoard = getBresenhamLine(firstPoint, secondPoint, true);
+                firstRightBoard = getBresenhamLine(firstPoint, auxiliaryPoint, false);
+                secondRightBoard = getBresenhamLine(auxiliaryPoint, thirdPoint, false);
+                secondLeftBoard = getBresenhamLine(secondPoint, thirdPoint, true);
             } else {
-                firstLeftBoard = drawBresenhamLine(firstPoint, auxiliaryPoint, true);
-                secondLeftBoard = drawBresenhamLine(auxiliaryPoint, thirdPoint, true);
-                firstRightBoard = drawBresenhamLine(firstPoint, secondPoint, false);
-                secondRightBoard = drawBresenhamLine(secondPoint, thirdPoint, false);
+                firstLeftBoard = getBresenhamLine(firstPoint, auxiliaryPoint, true);
+                secondLeftBoard = getBresenhamLine(auxiliaryPoint, thirdPoint, true);
+                firstRightBoard = getBresenhamLine(firstPoint, secondPoint, false);
+                secondRightBoard = getBresenhamLine(secondPoint, thirdPoint, false);
             }
 
-            drawPartTriangle(graphicsContext, (int) firstPoint.y, firstLeftBoard, firstRightBoard,
-                    firstPoint, secondPoint, thirdPoint, color, zBuffer);
+            DrawingPartsPolygons.drawPartTriangle(graphicsContext, firstPoint.getY(), firstLeftBoard, firstRightBoard,
+                    firstPoint, secondPoint, thirdPoint, color, zBuffer, position, picture, usedTexture, usedLighting);
         } else {
-            secondLeftBoard = drawBresenhamLine(firstPoint, thirdPoint, true);
-            secondRightBoard = drawBresenhamLine(secondPoint, thirdPoint, false);
+            secondLeftBoard = getBresenhamLine(firstPoint, thirdPoint, true);
+            secondRightBoard = getBresenhamLine(secondPoint, thirdPoint, false);
         }
 
-        drawPartTriangle(graphicsContext, (int) secondPoint.y, secondLeftBoard, secondRightBoard,
-                firstPoint, secondPoint, thirdPoint, color, zBuffer);
+        DrawingPartsPolygons.drawPartTriangle(graphicsContext, secondPoint.getY(), secondLeftBoard, secondRightBoard,
+                firstPoint, secondPoint, thirdPoint, color, zBuffer, position, picture, usedTexture, usedLighting);
     }
 
-    protected static void sortPoints(List<Vector3f> points) {
+    protected static void sortPoints(List<PolygonVertex> points) {
         points.sort((a, b) -> {
-            if (a.y == b.y) {
-                return (int) (a.x - b.x);
+            if (a.getY() == b.getY()) {
+                return a.getX() - b.getX();
             } else {
-                return (int) (a.y - b.y);
+                return a.getY() - b.getY();
             }
         });
     }
 
-    private static Vector3f getAuxiliaryPoint(Vector3f firstPoint, Vector3f secondPoint, Vector3f thirdPoint) {
-        float dy12 = secondPoint.y - firstPoint.y;
-        float dy13 = thirdPoint.y - firstPoint.y;
-        float dx13 = thirdPoint.x - firstPoint.x;
-        float x = dy12 * dx13 / dy13 + firstPoint.x;
+    private static PolygonVertex getAuxiliaryPoint(PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint) {
+        int dy12 = secondPoint.getY() - firstPoint.getY();
+        int dy13 = thirdPoint.getY() - firstPoint.getY();
+        int dx13 = thirdPoint.getX() - firstPoint.getX();
+        int x = dy12 * dx13 / dy13 + firstPoint.getX();
 
-        return new Vector3f(x, secondPoint.y, 0); // z пока просто так
+        return new PolygonVertex(x, secondPoint.getY());
     }
 
-    private static float getXAxisIncrement(Vector3f firstPoint, Vector3f secondPoint) {
-        if (firstPoint.y == secondPoint.y) {
+    private static float getXAxisIncrement(PolygonVertex firstPoint, PolygonVertex secondPoint) {
+        if (firstPoint.getY() == secondPoint.getY()) {
             return 0;
         } else {
-            float increment = secondPoint.x - firstPoint.x;
-            increment /= secondPoint.y - firstPoint.y;
+            float increment = secondPoint.getX() - firstPoint.getX();
+            increment /= secondPoint.getY() - firstPoint.getY();
             return increment;
         }
     }
 
-    private static int[] drawBresenhamLine(Vector3f firstPoint, Vector3f secondPoint, boolean isLeftBoard) {
+    private static int[] getBresenhamLine(PolygonVertex firstPoint, PolygonVertex secondPoint, boolean isLeftBoard) {
         int x, y, deltaX, deltaY, additionX, additionY, incrementX, incrementY, error, errorIncrease, errorDecrease;
-        int initialHeight = (int) firstPoint.y;
+        int initialHeight = firstPoint.getY();
 
-        deltaX = (int) (secondPoint.x - firstPoint.x);
-        deltaY = (int) (secondPoint.y - initialHeight);
-//        System.out.println("(secondPoint.y - initialHeight)" + (secondPoint.y + " " + initialHeight));
-        //log.println(deltaY);
+        deltaX = secondPoint.getX() - firstPoint.getX();
+        deltaY = secondPoint.getY() - initialHeight;
+
         int[] array = new int[0];
+
         try {
 
             array = new int[deltaY + 1];
@@ -102,6 +109,7 @@ public class PolygonRasterization {
         catch (OutOfMemoryError e) {
             System.out.println("outOfMemory " + deltaY);
         }
+
         Arrays.fill(array, -1);
 
         incrementX = Integer.compare(deltaX, 0);
@@ -123,7 +131,7 @@ public class PolygonRasterization {
         }
 
         error = errorIncrease / 2;
-        x = (int) firstPoint.x;
+        x = firstPoint.getX();
         y = initialHeight;
         array[0] = x;
 
@@ -150,50 +158,79 @@ public class PolygonRasterization {
             }
         }
 
-//        System.out.println("array lenght " + array.length);
         return array;
     }
 
-    private static final PrintWriter log;
 
-    static {
-        try {
-            log = new PrintWriter(".\\my_log.txt");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    private static boolean isPoint(PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint) {
+        return firstPoint.isScreenCoordinatesEquals(secondPoint) &&
+                secondPoint.isScreenCoordinatesEquals(thirdPoint) &&
+                thirdPoint.isScreenCoordinatesEquals(firstPoint);
     }
 
-    private static void drawPartTriangle(
-            GraphicsContext graphicsContext, int startY, int[] leftArray, int[] rightArray,
-            Vector3f firstPoint, Vector3f secondPoint, Vector3f thirdPoint, Color color, float[][] zBuffer
-    ) {
-        for (int i = 0; i < leftArray.length; i++) {
-            int leftBoard = leftArray[i];
-            int rightBoard = rightArray[i];
-            //log.println(leftBoard + " " + rightBoard);
-            int y = i + startY;
 
-            if (y < 0 || y >= zBuffer.length) {
-                continue;
+
+    private static PolygonVertex getPointWithMinimalZ(
+            PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint
+    ) {
+        if (firstPoint.getZ() <= secondPoint.getZ() && firstPoint.getZ() <= thirdPoint.getZ()) {
+            return firstPoint;
+        }
+
+        if (secondPoint.getZ() <= firstPoint.getZ() && secondPoint.getZ() <= thirdPoint.getZ()) {
+            return secondPoint;
+        }
+
+        return thirdPoint;
+    }
+
+    public static boolean isLine(PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint) {
+        int x, y, deltaX, deltaY, additionX, additionY, incrementX, incrementY, error, errorIncrease, errorDecrease;
+        int initialHeight = firstPoint.getY();
+
+        deltaX = thirdPoint.getX() - firstPoint.getX();
+        deltaY = thirdPoint.getY() - initialHeight;
+
+        incrementX = Integer.compare(deltaX, 0);
+        incrementY = Integer.compare(deltaY, 0);
+
+        deltaX = Math.abs(deltaX);
+        deltaY = Math.abs(deltaY);
+
+        if (deltaX > deltaY) {
+            additionX = incrementX;
+            additionY = 0;
+            errorIncrease = deltaX;
+            errorDecrease = deltaY;
+        } else {
+            additionX = 0;
+            additionY = incrementY;
+            errorIncrease = deltaY;
+            errorDecrease = deltaX;
+        }
+
+        error = errorIncrease / 2;
+        x = firstPoint.getX();
+        y = initialHeight;
+
+
+        for (int i = 0; i < errorIncrease; i++) {
+            error -= errorDecrease;
+
+            if (error < 0) {
+                error += errorIncrease;
+                x += incrementX;
+                y += incrementY;
+            } else {
+                x += additionX;
+                y += additionY;
             }
 
-            for (int x = leftBoard; x <= rightBoard; x++) {
-                if (x < 0 || x >= zBuffer[0].length) {
-                    continue;
-                }
-
-                float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
-                //System.out.println(firstPoint + " " + secondPoint + " " + thirdPoint);
-                if(z < 0 || z > 1) {
-                    continue;
-                }
-
-                if (zBuffer[y][x] == 0 || zBuffer[y][x] > z) {
-                    zBuffer[y][x] = z;
-                    graphicsContext.getPixelWriter().setColor(x, y, color);
-                }
+            if (x == secondPoint.getX() && y == thirdPoint.getY()) {
+                return true;
             }
         }
+
+        return false;
     }
 }
