@@ -12,6 +12,7 @@ public class BarycentricUtilities {
         float alpha = calculateAlpha(currentX, currentY, firstPoint, secondPoint, thirdPoint, beta);
 
 
+
         if (Float.isNaN(alpha) || Float.isNaN(beta)) {
             System.out.println(currentX + " " + currentY);
             System.out.println(beta + " " + alpha + " это getZ");
