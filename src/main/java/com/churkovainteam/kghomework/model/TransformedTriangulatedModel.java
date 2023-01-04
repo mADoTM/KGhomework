@@ -2,6 +2,8 @@ package com.churkovainteam.kghomework.model;
 
 import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransformedTriangulatedModel {
@@ -82,7 +84,7 @@ public class TransformedTriangulatedModel {
 
     public Vector3f getTransformedVector(int index) {
 
-        final var defaultVector = triangulationModel
+        final var defaultVector = triangulatedModel
                 .getInitialModel()
                 .vertices
                 .get(index);
