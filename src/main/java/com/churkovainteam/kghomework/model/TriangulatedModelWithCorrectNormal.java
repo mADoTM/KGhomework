@@ -5,21 +5,22 @@ import com.churkovainteam.kghomework.render_engine.rasterization.RenderingPrepar
 import java.util.ArrayList;
 import java.util.List;
 
-public class TriangulationModel {
+public class TriangulatedModelWithCorrectNormal {
     private final Model initialModel;
-    private final List<Polygon> triangulationPolygons;
+    private final List<Polygon> triangulatedPolygons;
 
-    public TriangulationModel(Model initialModel) {
+    public TriangulatedModelWithCorrectNormal(Model initialModel) {
+        RenderingPreparationUtilities.recalculateNormals(initialModel);
         this.initialModel = initialModel;
-        this.triangulationPolygons = triangulatePolygons(initialModel.polygons);
+        this.triangulatedPolygons = triangulatePolygons(initialModel.polygons);
     }
 
     public Model getInitialModel() {
         return initialModel;
     }
 
-    public List<Polygon> getTriangulationPolygons() {
-        return triangulationPolygons;
+    public List<Polygon> getTriangulatedPolygons() {
+        return triangulatedPolygons;
     }
 
     public static List<Polygon> triangulatePolygons(List<Polygon> initialPolygons) {

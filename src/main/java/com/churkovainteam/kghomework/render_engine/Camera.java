@@ -153,6 +153,10 @@ public final class Camera {
         return GraphicConveyor.lookAt(position, target);
     }
 
+    public Vector3f getPosition() {
+        return position;
+    }
+
     Matrix4f getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }

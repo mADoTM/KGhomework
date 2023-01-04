@@ -15,4 +15,12 @@ public final class Vector2f {
         Vector2f vector2f = (Vector2f) o;
         return Float.compare(vector2f.x, x) == 0 && Float.compare(vector2f.y, y) == 0;
     }
+
+    @Override
+    public String toString() {
+        return "Vector2f{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
