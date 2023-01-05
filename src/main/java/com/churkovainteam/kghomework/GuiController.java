@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GuiController {
 
@@ -61,7 +62,7 @@ public class GuiController {
     @FXML
     private void initialize() {
         Image picture;
-//"templates/adidasBox.png"
+////"templates/adidasBox.png"
         try {
             picture = new Image(new FileInputStream("templates/nike.png"));
         } catch (FileNotFoundException e) {
@@ -85,12 +86,19 @@ public class GuiController {
 
             camera.setAspectRatio((float) (width / height));
 
+            float[][] zBuffer = new float[(int) height][(int) width];
+
+            for (float[] array : zBuffer) {
+                Arrays.fill(array, Float.MAX_VALUE);
+            }
+
             if (mesh != null) {
                 RenderEngine.render(canvas.getGraphicsContext2D(),
                         camera,
                         mesh,
                         (int) width,
                         (int) height,
+                        zBuffer,
                         finalPicture,
                         false,
                         false,

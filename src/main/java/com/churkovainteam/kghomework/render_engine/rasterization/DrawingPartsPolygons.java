@@ -53,7 +53,7 @@ public class DrawingPartsPolygons {
             }
 
             if (y >= 0 && y < zBuffer.length && x >= 0 && x < zBuffer[0].length) {
-                zBuffer[y][x] = -1;
+                zBuffer[y][x] = Float.MIN_VALUE;
 
                 graphicsContext.getPixelWriter().setColor(x, y, color);
             }
@@ -81,22 +81,23 @@ public class DrawingPartsPolygons {
                 }
 
                 float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
-                if (z < 0 || z > 1) {
-                    continue;
-                }
+//                if (z < 0 || z > 1) {
+//                    continue;
+//                }
 
-                if (zBuffer[y][x] == 0 || zBuffer[y][x] > z) {
+                if (/*zBuffer[y][x] == 0 || */ zBuffer[y][x] > z) {
                     zBuffer[y][x] = z;
+                    color = preColor;
 
                     if (usedTexture) {
-                        preColor = getTexturePixelColor(firstPoint, secondPoint, thirdPoint, x, y, picture);
+                        color = getTexturePixelColor(firstPoint, secondPoint, thirdPoint, x, y, picture);
                     }
 
                     if (usedLighting) {
-                        preColor = getIlluminatedColor(firstPoint, secondPoint, thirdPoint, color, position, x, y);
+                        color = getIlluminatedColor(firstPoint, secondPoint, thirdPoint, color, position, x, y);
                     }
 
-                    graphicsContext.getPixelWriter().setColor(x, y, preColor);
+                    graphicsContext.getPixelWriter().setColor(x, y, color);
                 }
             }
         }
