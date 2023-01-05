@@ -26,6 +26,7 @@ public class RenderEngine {
             final TransformedTriangulatedModel mesh,
             final int width,
             final int height,
+            float[][] zBuffer,
             final Image picture,
             boolean usedPolygonalGrid,
             boolean usedTexture,
@@ -37,7 +38,6 @@ public class RenderEngine {
         modelViewProjectionMatrix.mul(viewMatrix);
         modelViewProjectionMatrix.mul(Matrix4f.identityMatrix());
 
-        float[][] zBuffer = new float[height][width];
         final int nPolygons = mesh.getPolygons().size();
 
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
@@ -71,7 +71,7 @@ public class RenderEngine {
                 // никаких мили выходов за края полигонов, которые могут возникнуть из-за float
             }
 
-            PolygonRasterization.drawPolygon(graphicsContext, resultPoints, Color.GREY, zBuffer,
+            PolygonRasterization.drawPolygon(graphicsContext, resultPoints, Color.RED, zBuffer,
                     camera.getPosition(), picture, usedTexture, usedLighting);
 
             //рисование сетки как и было
