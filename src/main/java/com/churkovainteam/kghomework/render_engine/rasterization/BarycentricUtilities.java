@@ -15,7 +15,7 @@ public class BarycentricUtilities {
 
         if (Float.isNaN(alpha) || Float.isNaN(beta)) {
             System.out.println(currentX + " " + currentY);
-            System.out.println(beta + " " + alpha + " это getZ");
+            System.out.println(alpha + " " + beta + " это getZ");
         }
 
         return alpha * firstPoint.getZ() + beta * secondPoint.getZ() + (1 - alpha - beta) * thirdPoint.getZ();
@@ -24,45 +24,39 @@ public class BarycentricUtilities {
     public static Vector3f getNormal(
             int currentX, int currentY, PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint
     ) {
-        float beta = calculateBeta(currentX, currentY, firstPoint, secondPoint, thirdPoint);
-        float alpha = calculateAlpha(currentX, currentY, firstPoint, secondPoint, thirdPoint, beta);
-
-
-        if (Float.isNaN(alpha) || Float.isNaN(beta)) {
-            System.out.println(beta + " " + alpha + " это getNormal");
-        }
-
         Vector3f firstNormal = firstPoint.getNormal();
         Vector3f secondNormal = secondPoint.getNormal();
         Vector3f thirdNormal = thirdPoint.getNormal();
 
-
-        float x =  alpha * firstNormal.x + beta * secondNormal.x + (1 - alpha - beta) * thirdNormal.x;
-        float y =  alpha * firstNormal.y + beta * secondNormal.y + (1 - alpha - beta) * thirdNormal.y;
-        float z = alpha * firstNormal.z + beta * secondNormal.z + (1 - alpha - beta) * thirdNormal.z;
-
-        return new Vector3f(x, y, z);
+        return getVector3f(currentX, currentY, firstPoint, secondPoint, thirdPoint,
+                firstNormal, secondNormal, thirdNormal);
     }
 
     public static Vector3f getWorldCoordinates(
             int currentX, int currentY, PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint
     ) {
-        float beta = calculateBeta(currentX, currentY, firstPoint, secondPoint, thirdPoint);
-        float alpha = calculateAlpha(currentX, currentY, firstPoint, secondPoint, thirdPoint, beta);
-
-
-        if (Float.isNaN(alpha) || Float.isNaN(beta)) {
-            System.out.println(beta + " " + alpha + " это getWorldCoordinates");
-        }
-
         Vector3f firstWorldCoordinates = firstPoint.getWorldCoordinates();
         Vector3f secondWorldCoordinates = secondPoint.getWorldCoordinates();
         Vector3f thirdWorldCoordinates = thirdPoint.getWorldCoordinates();
 
+        return getVector3f(currentX, currentY, firstPoint, secondPoint, thirdPoint,
+                firstWorldCoordinates, secondWorldCoordinates, thirdWorldCoordinates);
+    }
 
-        float x =  alpha * firstWorldCoordinates.x + beta * secondWorldCoordinates.x + (1 - alpha - beta) * thirdWorldCoordinates.x;
-        float y =  alpha * firstWorldCoordinates.y + beta * secondWorldCoordinates.y + (1 - alpha - beta) * thirdWorldCoordinates.y;
-        float z = alpha * firstWorldCoordinates.z + beta * secondWorldCoordinates.z + (1 - alpha - beta) * thirdWorldCoordinates.z;
+    private static Vector3f getVector3f(
+            int currentX, int currentY, PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint,
+            Vector3f firstVector, Vector3f secondVector, Vector3f thirdVector
+    ) {
+        float beta = calculateBeta(currentX, currentY, firstPoint, secondPoint, thirdPoint);
+        float alpha = calculateAlpha(currentX, currentY, firstPoint, secondPoint, thirdPoint, beta);
+
+        if (Float.isNaN(alpha) || Float.isNaN(beta)) {
+            System.out.println(alpha + " " + beta + " это getVector3f");
+        }
+
+        float x =  alpha * firstVector.x + beta * secondVector.x + (1 - alpha - beta) * thirdVector.x;
+        float y =  alpha * firstVector.y + beta * secondVector.y + (1 - alpha - beta) * thirdVector.y;
+        float z = alpha * firstVector.z + beta * secondVector.z + (1 - alpha - beta) * thirdVector.z;
 
         return new Vector3f(x, y, z);
     }
@@ -75,18 +69,16 @@ public class BarycentricUtilities {
 
 
         if (Float.isNaN(alpha) || Float.isNaN(beta)) {
-            System.out.println(beta + " " + alpha + " это getTexture");
+            System.out.println(alpha + " " + beta + " это getTexture");
         }
 
         Vector2f firstTexture = firstPoint.getTexture();
         Vector2f secondTexture = secondPoint.getTexture();
         Vector2f thirdTexture = thirdPoint.getTexture();
 
-        //System.out.println(firstTexture + "; " + secondTexture + "; " + thirdTexture);
-
         float x =  alpha * firstTexture.x + beta * secondTexture.x + (1 - alpha - beta) * thirdTexture.x;
         float y =  alpha * firstTexture.y + beta * secondTexture.y + (1 - alpha - beta) * thirdTexture.y;
-        //System.out.println(x + " " + y);
+
         return new Vector2f(x, y);
     }
 
@@ -109,11 +101,13 @@ public class BarycentricUtilities {
                     secondPoint.getX() * (thirdPoint.getY() - firstPoint.getY()) +
                     thirdPoint.getX() * (firstPoint.getY() - secondPoint.getY());
 
-            //            if (Float.isInfinite(beta)) {
-//                return  0;
-//            }
+            float beta = numerator / denominator;
 
-            return numerator / denominator;
+            if (Float.isInfinite(beta)) {
+                return  0;
+            }
+
+            return beta;
         }
     }
 
