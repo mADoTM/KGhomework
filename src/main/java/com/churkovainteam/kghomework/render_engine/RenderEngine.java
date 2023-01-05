@@ -52,14 +52,14 @@ public class RenderEngine {
                 Vector3f rotatedPoint = modelViewProjectionMatrix.multiplyByVector3(vertex);
 
                 final var resultPoint = vertexToPoint(rotatedPoint, width, height);
-                nullVector(resultPoint, width, height);
+                //nullVector(resultPoint, width, height);
                 resultPoints.add(resultPoint);
                 resultPointsWithZ.add(new Vector3f((int) resultPoint.x, (int) resultPoint.y, rotatedPoint.z));
                 // Здесь мне нужно приведение к int, т.к. растеризация была написана для целых x и y, чтобы не было
                 // никаких мили выходов за края полигонов, которые могут возникнуть из-за float
             }
 
-            PolygonRasterization.drawPolygon(graphicsContext, resultPointsWithZ, Color.PURPLE, zBuffer);
+            //PolygonRasterization.drawPolygon(graphicsContext, resultPointsWithZ, Color.PURPLE, zBuffer);
 
             //рисование сетки как и было
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
@@ -82,16 +82,16 @@ public class RenderEngine {
         }
     }
 
-    private static void nullVector(Point2f vector3f, int width, int height) {
-        if(vector3f.x < 0)
-            vector3f.x = 0;
-        if(vector3f.x >= width) {
-            vector3f.x = width - 1;
-        }
-        if(vector3f.y < 0)
-            vector3f.y = 0;
-        if(vector3f.y >= height) {
-            vector3f.y = height - 1;
-        }
-    }
+//    private static void nullVector(Point2f vector3f, int width, int height) {
+//        if(vector3f.x < 0)
+//            vector3f.x = 0;
+//        if(vector3f.x >= width) {
+//            vector3f.x = width - 1;
+//        }
+//        if(vector3f.y < 0)
+//            vector3f.y = 0;
+//        if(vector3f.y >= height) {
+//            vector3f.y = height - 1;
+//        }
+//    }
 }

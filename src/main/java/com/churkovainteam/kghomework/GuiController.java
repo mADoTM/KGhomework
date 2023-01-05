@@ -20,11 +20,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GuiController {
 
@@ -45,7 +47,8 @@ public class GuiController {
     @FXML
     private Canvas canvas;
 
-    private TransformedTriangulatedModel mesh;
+    private List<TransformedTriangulatedModel> meshes;
+    private List<TransformedTriangulatedModel> activeMeshes;
 
     private final Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -62,6 +65,9 @@ public class GuiController {
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
+        meshes = new ArrayList<>();
+        activeMeshes = new ArrayList<>();
+
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
@@ -72,12 +78,14 @@ public class GuiController {
 
             camera.setAspectRatio((float) (width / height));
 
-            if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(),
-                        camera,
-                        mesh,
-                        (int) width,
-                        (int) height);
+            if (meshes.size() != 0) {
+                for (var mesh : meshes) {
+                    RenderEngine.render(canvas.getGraphicsContext2D(),
+                            camera,
+                            mesh,
+                            (int) width,
+                            (int) height);
+                }
             }
         });
 
@@ -100,8 +108,8 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
-            mesh = new TransformedTriangulatedModel(ObjReader.read(fileContent));
-            // todo: обработка ошибок
+            meshes.add(new TransformedTriangulatedModel(ObjReader.read(fileContent)));
+            activeMeshes.add(meshes.get(meshes.size() - 1));
         } catch (IOException exception) {
 
         }
@@ -158,25 +166,32 @@ public class GuiController {
     }
 
     public void onRotateSlider(MouseEvent keyEvent) {
-        if(mesh == null) {
+        if (activeMeshes.size() == 0) {
             return;
         }
 
-        mesh.setRotate(new Vector3f((float) rotateXSlider.getValue(),
-                (float) rotateYSlider.getValue(),
-                (float) rotateZSlider.getValue()));
+        for (var mesh : activeMeshes) {
+            mesh.setRotate(new Vector3f((float) rotateXSlider.getValue(),
+                    (float) rotateYSlider.getValue(),
+                    (float) rotateZSlider.getValue()));
+        }
     }
 
     public void onScaleTextChange(KeyEvent inputMethodEvent) {
-        if(mesh == null) {
+        if (activeMeshes.size() == 0) {
             return;
         }
-        mesh.setScale(new Vector3f(Float.parseFloat(scalerX.getText()),
-                Float.parseFloat(scalerY.getText()),
-                Float.parseFloat(scalerZ.getText())));
 
-        mesh.setTranslatedVector(new Vector3f(Float.parseFloat(translateX.getText()),
-                Float.parseFloat(translateY.getText()),
-                Float.parseFloat(translateZ.getText())));
+        for (var mesh : activeMeshes) {
+            mesh.setScale(new Vector3f(Float.parseFloat(scalerX.getText()),
+                    Float.parseFloat(scalerY.getText()),
+                    Float.parseFloat(scalerZ.getText())));
+        }
+
+        for (var mesh : activeMeshes) {
+            mesh.setTranslatedVector(new Vector3f(Float.parseFloat(translateX.getText()),
+                    Float.parseFloat(translateY.getText()),
+                    Float.parseFloat(translateZ.getText())));
+        }
     }
 }
