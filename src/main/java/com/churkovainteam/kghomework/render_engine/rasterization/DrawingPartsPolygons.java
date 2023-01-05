@@ -62,9 +62,10 @@ public class DrawingPartsPolygons {
 
     public static void drawPartTriangle(
             GraphicsContext graphicsContext, int startY, int[] leftArray, int[] rightArray, PolygonVertex firstPoint,
-            PolygonVertex secondPoint, PolygonVertex thirdPoint, Color color, float[][] zBuffer,  Vector3f position,
-            Image picture,  boolean usedTexture, boolean usedLighting
+            PolygonVertex secondPoint, PolygonVertex thirdPoint, Color color, float[][] zBuffer, Vector3f position,
+            Image picture, boolean usedTexture, boolean usedLighting
     ) {
+        Color preColor = color;
         for (int i = 0; i < leftArray.length; i++) {
             int leftBoard = leftArray[i];
             int rightBoard = rightArray[i];
@@ -80,7 +81,6 @@ public class DrawingPartsPolygons {
                 }
 
                 float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
-                //System.out.println(firstPoint + " " + secondPoint + " " + thirdPoint);
                 if (z < 0 || z > 1) {
                     continue;
                 }
@@ -89,14 +89,14 @@ public class DrawingPartsPolygons {
                     zBuffer[y][x] = z;
 
                     if (usedTexture) {
-                        color = getTexturePixelColor(firstPoint, secondPoint, thirdPoint, x, y, picture);
+                        preColor = getTexturePixelColor(firstPoint, secondPoint, thirdPoint, x, y, picture);
                     }
 
                     if (usedLighting) {
-                        color = getIlluminatedColor(firstPoint, secondPoint, thirdPoint, color, position, x, y);
+                        preColor = getIlluminatedColor(firstPoint, secondPoint, thirdPoint, color, position, x, y);
                     }
 
-                    graphicsContext.getPixelWriter().setColor(x, y, color);
+                    graphicsContext.getPixelWriter().setColor(x, y, preColor);
                 }
             }
         }
@@ -115,12 +115,12 @@ public class DrawingPartsPolygons {
 
 
         float ratio = cameraVector.dot(normal);
-       // ratio = Math.abs(ratio);
-
 
         if (ratio < 0) {
             ratio = 0;
         }
+        ratio /= 2;
+        ratio += 0.37F;
 
         float r = (float) (ratio * color.getRed());
         float g = (float) (ratio * color.getGreen());
@@ -131,7 +131,7 @@ public class DrawingPartsPolygons {
 
     private static Color getTexturePixelColor(
             PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint, int x, int y, Image picture
-    )  {
+    ) {
         Vector2f currentTexture = BarycentricUtilities.getTexture(x, y, firstPoint, secondPoint, thirdPoint);
 
 
@@ -150,25 +150,6 @@ public class DrawingPartsPolygons {
 
         return picture.getPixelReader().getColor((int) currentTexture.x, (int) currentTexture.y);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //    private static boolean checkPixelForCorrectness(int x, int y, float z, float[][] zBuffer) {
