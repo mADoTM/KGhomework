@@ -76,7 +76,7 @@ public class GuiController {
         timeline.setCycleCount(Animation.INDEFINITE);
 
         Image finalPicture = picture;
-        KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
+        KeyFrame frame = new KeyFrame(Duration.millis(60), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
 
@@ -101,8 +101,8 @@ public class GuiController {
                         zBuffer,
                         finalPicture,
                         false,
-                        false,
-                        false
+                        true,
+                        true
                 );
             }
         });

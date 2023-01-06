@@ -60,7 +60,8 @@ public class RenderEngine {
                 int textureIndex = currentPolygon.getTextureVertexIndices().get(vertexInPolygonInd);
                 Vector3f normal = mesh.getNormals().get(currentVertexIndex);
 
-                final var vertex = mesh.getVertices().get(currentVertexIndex);
+//                final var vertex = mesh.getVertices().get(currentVertexIndex);
+                final var vertex = mesh.getTransformedVector(currentVertexIndex);
                 Vector3f rotatedPoint = modelViewProjectionMatrix.multiplyByVector3(vertex);
 
                 final var resultPoint = vertexToPoint(rotatedPoint, width, height);
