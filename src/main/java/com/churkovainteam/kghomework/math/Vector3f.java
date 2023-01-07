@@ -47,8 +47,8 @@ public final class Vector3f {
     public void normalize() {
         float norm =
                 (float) (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
-                
-        if(MathSettings.isEqual(length(), 0)) {
+
+        if (MathSettings.isEqual(length(), 0)) {
             norm = 0;
         }
 
@@ -113,18 +113,11 @@ public final class Vector3f {
         this.z *= scale;
     }
 
-    public static float angleBetweenTwoVectors(Vector3f vec1, Vector3f vec2) {
-        if (vec1 == null || vec2 == null) {
-            throw new IllegalArgumentException("Vector can't be null");
-        }
-        return (vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z) / (vec1.length() * vec2.length());
-    }
-
-    public static Vector3f fromTwoPoints(Vector3f vertex1, Vector3f vertex2){
+    public static Vector3f fromTwoPoints(Vector3f vertex1, Vector3f vertex2) {
         return new Vector3f(vertex2.x - vertex1.x, vertex2.y - vertex1.y, vertex2.z - vertex1.z);
     }
 
-    public static Vector3f sum(List<Vector3f> vectors){
+    public static Vector3f sum(List<Vector3f> vectors) {
         float x = vectors.get(0).x;
         float y = vectors.get(0).y;
         float z = vectors.get(0).z;
@@ -133,7 +126,7 @@ public final class Vector3f {
             y += vectors.get(i).y;
             z += vectors.get(i).z;
         }
-        return new Vector3f(x,y,z);
+        return new Vector3f(x, y, z);
     }
 
     public float length() {
@@ -143,6 +136,13 @@ public final class Vector3f {
     @Override
     public int hashCode() {
         return Objects.hash(x, y, z);
+    }
+
+    public Vector3f divide(float num) {
+        if(MathSettings.isEqual(num, 0))
+            throw new ArithmeticException("Division by zero");
+
+        return new Vector3f(x / num, y / num, z / num);
     }
 
     @Override
@@ -162,12 +162,5 @@ public final class Vector3f {
                 ", y=" + y +
                 ", z=" + z +
                 '}';
-    }
-
-    public Vector3f divide(float num){
-        final float eps = 1e-7f;
-        if(num - 0 < eps)
-            throw new ArithmeticException("Division by zero");
-        return new Vector3f(x / num, y / num, z / num);
     }
 }

@@ -54,16 +54,8 @@ public final class Matrix4f {
         this.matrix = new float[4][4];
 
         for (int i = 0; i < matrix.length; i++) {
-            for(int j = 0; j < matrix.length; j++) {
-                matrix[i][j] = vertices[4 * i + j];
-            }
+            System.arraycopy(vertices, 4 * i, matrix[i], 0, matrix.length);
         }
-    }
-
-    public void mul(float scalar) {
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-                matrix[i][j] *= scalar;
     }
 
     public void mul(Matrix4f m1) {
@@ -100,10 +92,6 @@ public final class Matrix4f {
         return new Matrix4f(matrix);
     }
 
-    public float[][] getMatrix() {
-        return matrix;
-    }
-
     public float get(int n, int m) {
         return matrix[n][m];
     }
@@ -119,7 +107,7 @@ public final class Matrix4f {
             sb.append(Arrays.toString(array));
         return "Matrix4f{" +
                 "matrix=" +
-                sb.toString() +
+                sb +
                 '}';
     }
 }

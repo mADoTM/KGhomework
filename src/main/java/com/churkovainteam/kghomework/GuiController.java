@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GuiController {
@@ -76,7 +75,7 @@ public class GuiController {
         timeline.setCycleCount(Animation.INDEFINITE);
 
         Image finalPicture = picture;
-        KeyFrame frame = new KeyFrame(Duration.millis(60), event -> {
+        KeyFrame frame = new KeyFrame(Duration.millis(80), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
 

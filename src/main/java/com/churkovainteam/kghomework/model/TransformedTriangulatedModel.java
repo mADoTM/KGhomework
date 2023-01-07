@@ -3,7 +3,6 @@ package com.churkovainteam.kghomework.model;
 import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TransformedTriangulatedModel {
@@ -33,29 +32,6 @@ public class TransformedTriangulatedModel {
 
     public List<Polygon> getPolygons() {
         return triangulatedModel.getTriangulatedPolygons();
-    }
-
-    public List<Vector3f> getVertices() {
-        final var result = new ArrayList<Vector3f>();
-
-        for (var defaultVector : triangulatedModel
-                .getInitialModel()
-                .vertices) {
-            final var transformedVector = new Vector3f(defaultVector);
-            transformedVector.scaleX(scaleX);
-            transformedVector.scaleY(scaleY);
-            transformedVector.scaleZ(scaleZ);
-
-            transformedVector.rotateAroundX(rotateAngleX);
-            transformedVector.rotateAroundY(rotateAngleY);
-            transformedVector.rotateAroundZ(rotateAngleZ);
-
-            transformedVector.add(translatedVector);
-
-            result.add(transformedVector);
-        }
-
-        return result;
     }
 
     public List<Vector3f> getNormals() {
