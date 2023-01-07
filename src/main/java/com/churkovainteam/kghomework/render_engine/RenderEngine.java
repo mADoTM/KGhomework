@@ -11,7 +11,6 @@ import com.churkovainteam.kghomework.render_engine.rasterization.DrawingPartsPol
 import com.churkovainteam.kghomework.model.TransformedTriangulatedModel;
 
 import com.churkovainteam.kghomework.render_engine.rasterization.PolygonRasterization;
-import com.churkovainteam.kghomework.render_engine.rasterization.PolygonRasterization2;
 import com.churkovainteam.kghomework.render_engine.rasterization.PolygonVertex;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -21,6 +20,8 @@ import static com.churkovainteam.kghomework.math.Point2f.vertexToPoint;
 
 public class RenderEngine {
     // ChangedModel, углы, масштабирование, перемещение, Model.
+    private static final Color DEFAULT_COLOR = Color.GREY;
+
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
@@ -73,12 +74,12 @@ public class RenderEngine {
                 // никаких мили выходов за края полигонов, которые могут возникнуть из-за float
             }
 
-            PolygonRasterization.drawPolygon(graphicsContext, resultPoints, Color.RED, zBuffer,
+            PolygonRasterization.drawPolygon(graphicsContext, resultPoints, DEFAULT_COLOR, zBuffer,
                     camera.getPosition(), picture, usedTexture, usedLighting);
 
             //это такая же отрисовка только через DDA, но лучше использовать брезенхема. Если всё-таки захотите
             //проверить с ней, то раскомментируйте строки 80 81 и закомментируйте 75 76
-//            PolygonRasterization2.drawPolygon(graphicsContext, resultPoints, Color.RED, zBuffer,
+//            PolygonRasterization2.drawPolygon(graphicsContext, resultPoints, DEFAULT_COLOR, zBuffer,
 //                    camera.getPosition(), picture, usedTexture, usedLighting);
 
             //рисование сетки как и было
