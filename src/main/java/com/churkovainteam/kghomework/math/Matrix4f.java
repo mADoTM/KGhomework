@@ -98,7 +98,7 @@ public final class Matrix4f {
         float[] matrix = new float[]{
                 (float) (Math.cos(angleY) * Math.cos(angleZ)), (float) (-Math.sin(angleZ) * Math.cos(angleY)), (float) Math.sin(angleY), 0,
                 (float) (Math.sin(angleX) * Math.sin(angleY) * Math.cos(angleZ) + Math.sin(angleZ) * Math.cos(angleX)), (float) (-Math.sin(angleX) * Math.sin(angleY) * Math.sin(angleZ) + Math.cos(angleZ) * Math.cos(angleX)), (float) (-Math.sin(angleX) * Math.cos(angleY)), 0,
-                (float) (Math.sin(angleZ) * Math.sin(angleX) - Math.cos(angleX) * Math.sin(angleY) * Math.cos(angleZ)), (float) (Math.cos(angleZ) * Math.sin(angleX) + Math.cos(angleX) * Math.sin(angleY) * Math.cos(angleZ)), (float) (Math.cos(angleX) * Math.cos(angleY)), 0,
+                (float) (Math.sin(angleZ) * Math.sin(angleX) - Math.cos(angleX) * Math.sin(angleY) * Math.cos(angleZ)), (float) (Math.cos(angleZ) * Math.sin(angleX) + Math.cos(angleX) * Math.sin(angleY) * Math.sin(angleZ)), (float) (Math.cos(angleX) * Math.cos(angleY)), 0,
                 0, 0, 0, 1
         };
 
