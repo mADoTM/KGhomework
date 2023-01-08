@@ -80,7 +80,7 @@ public class PolygonRasterization {
         int dx13 = thirdPoint.getX() - firstPoint.getX();
         int x = dy12 * dx13 / dy13 + firstPoint.getX();
 
-        return new PolygonVertex(x, secondPoint.getY());
+        return new PolygonVertex(x, secondPoint.getY(), 0, null, null, null);
     }
 
     private static float getXAxisIncrement(PolygonVertex firstPoint, PolygonVertex secondPoint) {

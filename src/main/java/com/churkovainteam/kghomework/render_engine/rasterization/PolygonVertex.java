@@ -23,15 +23,6 @@ public class PolygonVertex {
         this.worldCoordinates = worldCoordinates;
     }
 
-    public PolygonVertex(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.z = 0;
-        this.texture = null;
-        this.normal = null;
-        this.worldCoordinates = null;
-
-    }
 
     public int getX() {
         return x;
