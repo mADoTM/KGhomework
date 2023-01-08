@@ -177,6 +177,7 @@ public class DrawingPartsPolygons {
         int width = (int) picture.getWidth();
         int height = (int) picture.getHeight();
 
+        currentTexture.y = 1 - currentTexture.y;
         currentTexture.x *= width;
         currentTexture.y *= height;
 
