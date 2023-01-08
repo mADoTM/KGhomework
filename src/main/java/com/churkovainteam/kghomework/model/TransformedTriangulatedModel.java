@@ -78,4 +78,8 @@ public class TransformedTriangulatedModel {
 
         return transformedVector;
     }
+
+    public TriangulatedModelWithCorrectNormal getTriangulatedModel() {
+        return triangulatedModel;
+    }
 }
