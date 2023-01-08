@@ -72,6 +72,7 @@ public class RenderEngine {
 
                 if (usedLighting) {
                     normal = mesh.getNormals().get(currentVertexIndex);
+                    normal = mesh.getRotationMatrix().multiplyByVector3(normal);
                 }
 
                 final var vertex = mesh.getTransformedVector(currentVertexIndex);

@@ -71,7 +71,7 @@ public class TransformedTriangulatedModel {
         transformedVector.scaleY(scaleY);
         transformedVector.scaleZ(scaleZ);
 
-        transformedVector = Matrix4f.rotationMatrix(rotateAngleX, rotateAngleY, rotateAngleZ)
+        transformedVector = getRotationMatrix()
                 .multiplyByVector3(transformedVector);
 
         transformedVector.add(translatedVector);
@@ -81,5 +81,9 @@ public class TransformedTriangulatedModel {
 
     public TriangulatedModelWithCorrectNormal getTriangulatedModel() {
         return triangulatedModel;
+    }
+
+    public Matrix4f getRotationMatrix() {
+        return Matrix4f.rotationMatrix(rotateAngleX, rotateAngleY, rotateAngleZ);
     }
 }
