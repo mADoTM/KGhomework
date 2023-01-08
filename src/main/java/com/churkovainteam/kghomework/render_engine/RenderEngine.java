@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.churkovainteam.kghomework.math.Matrix4f;
+import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 import com.churkovainteam.kghomework.model.Polygon;
 import com.churkovainteam.kghomework.render_engine.rasterization.DrawingPartsPolygons;
@@ -50,25 +51,35 @@ public class RenderEngine {
                     .getVertexIndices()
                     .size();
 
-//            final var resultPoints = new ArrayList<Point2f>();
             List<PolygonVertex> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 int currentVertexIndex = currentPolygon
                         .getVertexIndices()
                         .get(vertexInPolygonInd);
 
-                int textureIndex = currentPolygon.getTextureVertexIndices().get(vertexInPolygonInd);
-                Vector3f normal = mesh.getNormals().get(currentVertexIndex);
+                Vector2f texture = null;
 
-//                final var vertex = mesh.getVertices().get(currentVertexIndex);
+                if (usedTexture) {
+                    if (mesh.getTexture().size() == 0) {
+                        throw new IllegalArgumentException("В модели не указаны текстурные координаты");
+                    }
+
+                    int textureIndex = currentPolygon.getTextureVertexIndices().get(vertexInPolygonInd);
+                    texture = mesh.getTexture().get(textureIndex);
+                }
+
+                Vector3f normal = null;
+
+                if (usedLighting) {
+                    normal = mesh.getNormals().get(currentVertexIndex);
+                }
+
                 final var vertex = mesh.getTransformedVector(currentVertexIndex);
                 Vector3f rotatedPoint = modelViewProjectionMatrix.multiplyByVector3(vertex);
 
                 final var resultPoint = vertexToPoint(rotatedPoint, width, height);
-//                nullVector(resultPoint, width, height);
-//                resultPoints.add(resultPoint);
                 resultPoints.add(new PolygonVertex((int) resultPoint.x, (int) resultPoint.y, rotatedPoint.z,
-                        mesh.getTexture().get(textureIndex), normal, vertex));
+                        texture, normal, vertex));
                 // Здесь мне нужно приведение к int, т.к. растеризация была написана для целых x и y, чтобы не было
                 // никаких мили выходов за края полигонов, которые могут возникнуть из-за float
             }
