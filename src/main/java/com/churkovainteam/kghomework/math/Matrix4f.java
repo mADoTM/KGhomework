@@ -75,9 +75,9 @@ public final class Matrix4f {
         final var x = (vertex.x * this.matrix[0][0]) + (vertex.y * this.matrix[0][1]) + (vertex.z * this.matrix[0][2]) + this.matrix[0][3];
         final var y = (vertex.x * this.matrix[1][0]) + (vertex.y * this.matrix[1][1]) + (vertex.z * this.matrix[1][2]) + this.matrix[1][3];
         final var z = (vertex.x * this.matrix[2][0]) + (vertex.y * this.matrix[2][1]) + (vertex.z * this.matrix[2][2]) + this.matrix[2][3];
-         var w = (vertex.x * this.matrix[3][0]) + (vertex.y * this.matrix[3][1]) + (vertex.z * this.matrix[3][2]) + this.matrix[3][3];
-        // TODO z/w отдать
-        if(w <= MathSettings.EPS && w >= -1 * MathSettings.EPS) {
+        var w = (vertex.x * this.matrix[3][0]) + (vertex.y * this.matrix[3][1]) + (vertex.z * this.matrix[3][2]) + this.matrix[3][3];
+
+        if (MathSettings.isEqual(w, 0)) {
             w = 1;
         }
         return new Vector3f(x / w, y / w, z / w);
