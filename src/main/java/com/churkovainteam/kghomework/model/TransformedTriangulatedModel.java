@@ -1,5 +1,6 @@
 package com.churkovainteam.kghomework.model;
 
+import com.churkovainteam.kghomework.math.Matrix4f;
 import com.churkovainteam.kghomework.math.Vector2f;
 import com.churkovainteam.kghomework.math.Vector3f;
 
@@ -43,9 +44,9 @@ public class TransformedTriangulatedModel {
     }
     
     public void setRotate(Vector3f rotateVector) {
-        this.rotateAngleX = rotateVector.x;
-        this.rotateAngleY = rotateVector.y;
-        this.rotateAngleZ = rotateVector.z;
+        this.rotateAngleX = (float) Math.toRadians(rotateVector.x);
+        this.rotateAngleY = (float) Math.toRadians(rotateVector.y);
+        this.rotateAngleZ = (float) Math.toRadians(rotateVector.z);
     }
 
     public void setScale(Vector3f scaleVector) {
@@ -65,14 +66,13 @@ public class TransformedTriangulatedModel {
                 .vertices
                 .get(index);
 
-        final var transformedVector = new Vector3f(defaultVector.x, defaultVector.y, defaultVector.z);
+        var transformedVector = new Vector3f(defaultVector.x, defaultVector.y, defaultVector.z);
         transformedVector.scaleX(scaleX);
         transformedVector.scaleY(scaleY);
         transformedVector.scaleZ(scaleZ);
 
-        transformedVector.rotateAroundX(rotateAngleX);
-        transformedVector.rotateAroundY(rotateAngleY);
-        transformedVector.rotateAroundZ(rotateAngleZ);
+        transformedVector = Matrix4f.rotationMatrix(rotateAngleX, rotateAngleY, rotateAngleZ)
+                .multiplyByVector3(transformedVector);
 
         transformedVector.add(translatedVector);
 

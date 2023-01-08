@@ -85,30 +85,6 @@ public final class Vector3f {
         this.z += t1.z;
     }
 
-    public void rotateAroundX(float angle) {
-        float y = (float) (this.y * Math.cos(angle) + this.z * Math.sin(angle));
-        float z = (float) (-this.y * Math.sin(angle) + this.z * Math.cos(angle));
-
-        this.y = y;
-        this.z = z;
-    }
-
-    public void rotateAroundY(float angle) {
-        float x = (float) (this.x * Math.cos(angle) + this.z * Math.sin(angle));
-        float z = (float) (-this.x * Math.sin(angle) + this.z * Math.cos(angle));
-
-        this.x = x;
-        this.z = z;
-    }
-
-    public void rotateAroundZ(float angle) {
-        float x = (float) (this.x * Math.cos(angle) + this.y * Math.sin(angle));
-        float y = (float) (-this.x * Math.sin(angle) + this.y * Math.cos(angle));
-
-        this.x = x;
-        this.y = y;
-    }
-
     public void scaleX(float scale) {
         this.x *= scale;
     }
