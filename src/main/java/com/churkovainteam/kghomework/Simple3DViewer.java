@@ -3,10 +3,12 @@ package com.churkovainteam.kghomework;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class Simple3DViewer extends Application {
@@ -16,14 +18,15 @@ public class Simple3DViewer extends Application {
         AnchorPane viewport = FXMLLoader.load(Objects
                 .requireNonNull(Simple3DViewer
                         .class
-                        .getClassLoader()
-                        .getResource("gui.fxml")));
+                        .getResource("/layouts/gui.fxml")));
         Scene scene = new Scene(viewport);
-        stage.setMinWidth(1600);
-        stage.setMinHeight(900);
         viewport.prefWidthProperty().bind(scene.widthProperty());
         viewport.prefHeightProperty().bind(scene.heightProperty());
 
+        InputStream iconStream = getClass().getResourceAsStream("/icons/app_icon.jpg");
+        Image image = new Image(Objects.requireNonNull(iconStream));
+
+        stage.getIcons().add(image);
         stage.setTitle("Simple3DViewer");
         stage.setScene(scene);
         stage.show();
