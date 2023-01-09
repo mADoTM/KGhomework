@@ -31,6 +31,10 @@ public class TransformedTriangulatedModel {
         this.scaleZ = 1;
     }
 
+    public String getModelName() {
+        return triangulatedModel.getInitialModel().modelName;
+    }
+
     public List<Polygon> getPolygons() {
         return triangulatedModel.getTriangulatedPolygons();
     }

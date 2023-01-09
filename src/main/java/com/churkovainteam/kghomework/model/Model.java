@@ -6,6 +6,8 @@ import com.churkovainteam.kghomework.math.Vector3f;
 import java.util.*;
 
 public class Model {
+    public String modelName = "";
+
     public List<Vector3f> vertices = new ArrayList<>();
     public List<Vector2f> textureVertices = new ArrayList<>();
     public List<Vector3f> normals = new ArrayList<>();
