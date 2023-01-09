@@ -54,16 +54,8 @@ public final class Matrix4f {
         this.matrix = new float[4][4];
 
         for (int i = 0; i < matrix.length; i++) {
-            for(int j = 0; j < matrix.length; j++) {
-                matrix[i][j] = vertices[4 * i + j];
-            }
+            System.arraycopy(vertices, 4 * i, matrix[i], 0, matrix.length);
         }
-    }
-
-    public void mul(float scalar) {
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-                matrix[i][j] *= scalar;
     }
 
     public void mul(Matrix4f m1) {
@@ -83,9 +75,9 @@ public final class Matrix4f {
         final var x = (vertex.x * this.matrix[0][0]) + (vertex.y * this.matrix[0][1]) + (vertex.z * this.matrix[0][2]) + this.matrix[0][3];
         final var y = (vertex.x * this.matrix[1][0]) + (vertex.y * this.matrix[1][1]) + (vertex.z * this.matrix[1][2]) + this.matrix[1][3];
         final var z = (vertex.x * this.matrix[2][0]) + (vertex.y * this.matrix[2][1]) + (vertex.z * this.matrix[2][2]) + this.matrix[2][3];
-         var w = (vertex.x * this.matrix[3][0]) + (vertex.y * this.matrix[3][1]) + (vertex.z * this.matrix[3][2]) + this.matrix[3][3];
-        // TODO z/w отдать
-        if(w <= MathSettings.EPS && w >= -1 * MathSettings.EPS) {
+        var w = (vertex.x * this.matrix[3][0]) + (vertex.y * this.matrix[3][1]) + (vertex.z * this.matrix[3][2]) + this.matrix[3][3];
+
+        if (MathSettings.isEqual(w, 0)) {
             w = 1;
         }
         return new Vector3f(x / w, y / w, z / w);
@@ -100,8 +92,17 @@ public final class Matrix4f {
         return new Matrix4f(matrix);
     }
 
-    public float[][] getMatrix() {
-        return matrix;
+    public static Matrix4f rotationMatrix(float angleX,
+                                          float angleY,
+                                          float angleZ) {
+        float[] matrix = new float[]{
+                (float) (Math.cos(angleY) * Math.cos(angleZ)), (float) (-Math.sin(angleZ) * Math.cos(angleY)), (float) Math.sin(angleY), 0,
+                (float) (Math.sin(angleX) * Math.sin(angleY) * Math.cos(angleZ) + Math.sin(angleZ) * Math.cos(angleX)), (float) (-Math.sin(angleX) * Math.sin(angleY) * Math.sin(angleZ) + Math.cos(angleZ) * Math.cos(angleX)), (float) (-Math.sin(angleX) * Math.cos(angleY)), 0,
+                (float) (Math.sin(angleZ) * Math.sin(angleX) - Math.cos(angleX) * Math.sin(angleY) * Math.cos(angleZ)), (float) (Math.cos(angleZ) * Math.sin(angleX) + Math.cos(angleX) * Math.sin(angleY) * Math.sin(angleZ)), (float) (Math.cos(angleX) * Math.cos(angleY)), 0,
+                0, 0, 0, 1
+        };
+
+        return new Matrix4f(matrix);
     }
 
     public float get(int n, int m) {
@@ -119,7 +120,7 @@ public final class Matrix4f {
             sb.append(Arrays.toString(array));
         return "Matrix4f{" +
                 "matrix=" +
-                sb.toString() +
+                sb +
                 '}';
     }
 }

@@ -103,6 +103,44 @@ public class DrawingPartsPolygons {
         }
     }
 
+    public  static  void drawPartTriangle2(
+            GraphicsContext graphicsContext, int startY, int endY, float leftBoard, float rightBoard, float leftIncrement,
+            float rightIncrement, PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint,
+            Color color, float[][] zBuffer, Vector3f position, Image picture, boolean usedTexture, boolean usedLighting
+    ) {
+        Color initialColor = color;
+        for (int y = startY; y <= endY; y++) {
+            if (y < 0 || y >= zBuffer.length) {
+                continue;
+            }
+
+            for (int x = (int) leftBoard; x <= (int) rightBoard; x++) {
+                if (x < 0 || x >= zBuffer[0].length) {
+                    continue;
+                }
+
+                float z = BarycentricUtilities.getZ(x, y, firstPoint, secondPoint, thirdPoint);
+
+                if (zBuffer[y][x] > z) {
+                    zBuffer[y][x] = z;
+                    color = initialColor;
+
+                    if (usedTexture) {
+                        color = getTexturePixelColor(firstPoint, secondPoint, thirdPoint, x, y, picture);
+                    }
+
+                    if (usedLighting) {
+                        color = getIlluminatedColor(firstPoint, secondPoint, thirdPoint, color, position, x, y);
+                    }
+
+                    graphicsContext.getPixelWriter().setColor(x, y, color);
+                }            }
+
+            leftBoard += leftIncrement;
+            rightBoard += rightIncrement;
+        }
+    }
+
     private static Color getIlluminatedColor(
             PolygonVertex firstPoint, PolygonVertex secondPoint, PolygonVertex thirdPoint, Color color, Vector3f position,
             int x, int y
@@ -139,6 +177,7 @@ public class DrawingPartsPolygons {
         int width = (int) picture.getWidth();
         int height = (int) picture.getHeight();
 
+        currentTexture.y = 1 - currentTexture.y;
         currentTexture.x *= width;
         currentTexture.y *= height;
 

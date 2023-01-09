@@ -74,12 +74,12 @@ public class ObjWriter {
         } else {
             final var polygons = this.model.polygons;
 
-            for(int i = 0; i < polygons.size(); ++i) {
+            for (int i = 0; i < polygons.size(); ++i) {
                 final var polygon = polygons.get(i);
                 lines.append(ObjToken.FACE).append(" ");
 
-                for(int index = 0; index < polygon.getVertexIndices().size(); ++index) {
-                    lines.append(this.getNumberInString((float)(polygon.getVertexIndices().get(index) + 1)));
+                for (int index = 0; index < polygon.getVertexIndices().size(); ++index) {
+                    lines.append(this.getNumberInString((float) (polygon.getVertexIndices().get(index) + 1)));
                     Integer textureIndex = null;
                     if (polygon.getTextureVertexIndices().size() > 0) {
                         textureIndex = polygon.getTextureVertexIndices().get(index) + 1;
@@ -91,7 +91,7 @@ public class ObjWriter {
                             lines.append("/");
                         }
 
-                        lines.append("/").append(this.getNumberInString((float)(polygon.getNormalIndices().get(index) + 1)));
+                        lines.append("/").append(this.getNumberInString((float) (polygon.getNormalIndices().get(index) + 1)));
                     }
 
                     if (index < polygon.getVertexIndices().size() - 1) {
@@ -107,19 +107,17 @@ public class ObjWriter {
     }
 
     protected String getVector3fWithTokenInString(Vector3f vector3f, ObjToken token) {
-        String var10000 = String.valueOf(token);
-        return var10000 + " " + this.getNumberInString(vector3f.x) + " " + this.getNumberInString(vector3f.y) + " " + this.getNumberInString(vector3f.z);
+        return token + " " + this.getNumberInString(vector3f.x) + " " + this.getNumberInString(vector3f.y) + " " + this.getNumberInString(vector3f.z);
     }
 
     protected String getVector2fWithTokenInString(Vector2f vector2f) {
-        String var10000 = String.valueOf(ObjToken.TEXTURE);
-        return var10000 + " " + this.getNumberInString(vector2f.x) + " " + this.getNumberInString(vector2f.y);
+        return ObjToken.TEXTURE + " " + this.getNumberInString(vector2f.x) + " " + this.getNumberInString(vector2f.y);
     }
 
     protected String getNumberInString(double number) {
         String result = "";
         if (number % 1.0F == 0.0F) {
-            result = result + (int)number;
+            result = result + (int) number;
         } else {
             result = result + number;
         }

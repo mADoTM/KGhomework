@@ -47,8 +47,8 @@ public final class Vector3f {
     public void normalize() {
         float norm =
                 (float) (1.0 / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z));
-                
-        if(MathSettings.isEqual(length(), 0)) {
+
+        if (MathSettings.isEqual(length(), 0)) {
             norm = 0;
         }
 
@@ -66,39 +66,23 @@ public final class Vector3f {
     }
 
     public void add(Vector3f t1, Vector3f t2) {
+        if (t1 == null || t2 == null) {
+            throw new IllegalArgumentException("Vector3f can not be null");
+        }
+
         this.x = t1.x + t2.x;
         this.y = t1.y + t2.y;
         this.z = t1.z + t2.z;
     }
 
     public void add(Vector3f t1) {
+        if (t1 == null) {
+            throw new IllegalArgumentException("Vector3f can not be null");
+        }
+
         this.x += t1.x;
         this.y += t1.y;
         this.z += t1.z;
-    }
-
-    public void rotateAroundX(float angle) {
-        float y = (float) (this.y * Math.cos(angle) + this.z * Math.sin(angle));
-        float z = (float) (-this.y * Math.sin(angle) + this.z * Math.cos(angle));
-
-        this.y = y;
-        this.z = z;
-    }
-
-    public void rotateAroundY(float angle) {
-        float x = (float) (this.x * Math.cos(angle) + this.z * Math.sin(angle));
-        float z = (float) (-this.x * Math.sin(angle) + this.z * Math.cos(angle));
-
-        this.x = x;
-        this.z = z;
-    }
-
-    public void rotateAroundZ(float angle) {
-        float x = (float) (this.x * Math.cos(angle) + this.y * Math.sin(angle));
-        float y = (float) (-this.x * Math.sin(angle) + this.y * Math.cos(angle));
-
-        this.x = x;
-        this.y = y;
     }
 
     public void scaleX(float scale) {
@@ -113,27 +97,18 @@ public final class Vector3f {
         this.z *= scale;
     }
 
-    public static float angleBetweenTwoVectors(Vector3f vec1, Vector3f vec2) {
-        if (vec1 == null || vec2 == null) {
-            throw new IllegalArgumentException("Vector can't be null");
-        }
-        return (vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z) / (vec1.length() * vec2.length());
+    public static Vector3f fromTwoPoints(Vector3f vertex1, Vector3f vertex2) {
+        return new Vector3f(vertex2.x - vertex1.x,
+                vertex2.y - vertex1.y,
+                vertex2.z - vertex1.z);
     }
 
-    public static Vector3f fromTwoPoints(Vector3f vertex1, Vector3f vertex2){
-        return new Vector3f(vertex2.x - vertex1.x, vertex2.y - vertex1.y, vertex2.z - vertex1.z);
-    }
+    public static Vector3f sum(List<Vector3f> vectors) {
+        final var result = new Vector3f();
 
-    public static Vector3f sum(List<Vector3f> vectors){
-        float x = vectors.get(0).x;
-        float y = vectors.get(0).y;
-        float z = vectors.get(0).z;
-        for (int i = 1; i < vectors.size(); i++) {
-            x += vectors.get(i).x;
-            y += vectors.get(i).y;
-            z += vectors.get(i).z;
-        }
-        return new Vector3f(x,y,z);
+        vectors.forEach(result::add);
+
+        return result;
     }
 
     public float length() {
@@ -143,6 +118,13 @@ public final class Vector3f {
     @Override
     public int hashCode() {
         return Objects.hash(x, y, z);
+    }
+
+    public Vector3f divide(float num) {
+        if (MathSettings.isEqual(num, 0))
+            throw new ArithmeticException("Division by zero");
+
+        return new Vector3f(x / num, y / num, z / num);
     }
 
     @Override
@@ -162,12 +144,5 @@ public final class Vector3f {
                 ", y=" + y +
                 ", z=" + z +
                 '}';
-    }
-
-    public Vector3f divide(float num){
-        final float eps = 1e-7f;
-        if(num - 0 < eps)
-            throw new ArithmeticException("Division by zero");
-        return new Vector3f(x / num, y / num, z / num);
     }
 }
