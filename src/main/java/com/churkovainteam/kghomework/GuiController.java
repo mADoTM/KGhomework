@@ -5,6 +5,7 @@ import com.churkovainteam.kghomework.model.Model;
 import com.churkovainteam.kghomework.model.TransformedTriangulatedModel;
 import com.churkovainteam.kghomework.objreader.ObjReader;
 import com.churkovainteam.kghomework.objreader.ObjReaderException;
+import com.churkovainteam.kghomework.objwriter.ObjWriter;
 import com.churkovainteam.kghomework.render_engine.Camera;
 import com.churkovainteam.kghomework.render_engine.MovementVector;
 import com.churkovainteam.kghomework.render_engine.RenderEngine;
@@ -24,11 +25,9 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
-import java.io.File;
 import java.util.*;
 
 public class GuiController {
@@ -174,7 +173,13 @@ public class GuiController {
 
             Model model = ObjReader.read(fileContent);
             if (scene.getModel(objName) != null) {
-                objName = String.valueOf(1).concat(objName);
+                String newObjName = objName;
+                int num = 1;
+                while (scene.getModel(newObjName) != null) {
+                    newObjName = String.valueOf(num).concat(objName);
+                    num++;
+                }
+                objName = newObjName;
             }
 
             model.modelName = objName;
@@ -238,6 +243,14 @@ public class GuiController {
         scene.getActiveCamera().rotateCameraVertical(-TRANSLATION);
     }
 
+    private boolean checkFieldsValues(String x, String y, String z) {
+        if (x.equals("") || y.equals("") || z.equals("")) {
+            return true;
+        }
+
+        return x.equals("-") || y.equals("-") || z.equals("-");
+    }
+
     public void onRotateField(KeyEvent event) {
 //        for (var model : scene.getModels()) {
 //            if (scene.isModelActive(model)) {
@@ -254,7 +267,7 @@ public class GuiController {
         String y = yRotateField.getText();
         String z = zRotateField.getText();
 
-        if (x.equals("") || y.equals("") || z.equals("")) {
+        if (checkFieldsValues(x, y, z)) {
             return;
         }
 
@@ -283,9 +296,10 @@ public class GuiController {
         String y = yScale.getText();
         String z = zScale.getText();
 
-        if (x.equals("") || y.equals("") || z.equals("")) {
+        if (checkFieldsValues(x, y, z)) {
             return;
         }
+
         try {
             scene.getActiveModel().setScale(new Vector3f(Float.parseFloat(x),
                     Float.parseFloat(y),
@@ -312,7 +326,7 @@ public class GuiController {
         String y = translateY.getText();
         String z = translateZ.getText();
 
-        if (x.equals("") || y.equals("") || z.equals("")) {
+        if (checkFieldsValues(x, y, z)) {
             return;
         }
 
@@ -503,5 +517,29 @@ public class GuiController {
         }
 
         scene.setActiveModel(modelName);
+    }
+
+    public void onSaveModelButton(ActionEvent actionEvent) {
+        if (activeModelComboBox.getValue() == null) {
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+        fileChooser.setTitle("Save Model");
+
+        File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        Path fileName = Path.of(file.getAbsolutePath());
+        try {
+            PrintWriter out = new PrintWriter(new File(fileName.toUri()));
+            out.println(ObjWriter.getContent(scene.getModel(activeModelComboBox.getValue()).getTriangulatedModel().getInitialModel()));
+            out.close();
+        } catch (FileNotFoundException e) {
+            showAlert("File with this name not found");
+        }
     }
 }
