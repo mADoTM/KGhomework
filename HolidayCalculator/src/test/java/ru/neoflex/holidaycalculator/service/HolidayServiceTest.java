@@ -14,24 +14,20 @@ class HolidayServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenDaysLessThan0() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-           service.calculate(new BigDecimal(0), -1);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                service.calculate(new BigDecimal(0), -1));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.calculate(new BigDecimal(0), -2);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                service.calculate(new BigDecimal(0), -2));
     }
 
     @Test
     public void shouldThrowExceptionWhenSalaryLessThan0() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.calculate(new BigDecimal(-1), 5);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                service.calculate(new BigDecimal(-1), 5));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.calculate(new BigDecimal(-195195), 3);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                service.calculate(new BigDecimal(-195195), 3));
     }
 
     @Test
